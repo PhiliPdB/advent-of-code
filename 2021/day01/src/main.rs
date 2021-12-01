@@ -20,5 +20,4 @@ fn main() {
     }
 
     println!("Measurement increases: {}", increases);
-
 }
