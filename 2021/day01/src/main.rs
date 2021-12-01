@@ -4,17 +4,20 @@ fn main() {
         .map(|i| i.parse::<i32>().unwrap())
         .collect();
 
-
+    // Set the size of the sliding window.
+    // This should be 1 for part 1 and 3 for part 2.
     const WINDOW_SIZE: usize = 3;
 
     let mut increases = 0;
-    let mut last_measurement: i32 = input[0..WINDOW_SIZE].iter().sum();
     for i in WINDOW_SIZE..input.len() {
-        let new_measurement = last_measurement - input[i - WINDOW_SIZE] + input[i];
-        if new_measurement > last_measurement {
+        // We can obtain the new measurement by subtracting input[i - WINDOW_SIZE]
+        // from the previous sum and adding input[i].
+        // This leads to a measurement increase iff input[i - WINDOW_SIZE] < input[i].
+        // Thus, we only need to check this condition, meaning there is no need to keep
+        // track of the previous total.
+        if input[i - WINDOW_SIZE] < input[i] {
             increases += 1;
         }
-        last_measurement = new_measurement;
     }
 
     println!("Measurement increases: {}", increases);
