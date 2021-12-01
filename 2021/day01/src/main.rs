@@ -1,6 +1,6 @@
 fn main() {
     let input: Vec<_> = include_str!("../input.txt")
-        .split('\n')
+        .lines()
         .map(|i| i.parse::<i32>().unwrap())
         .collect();
 
