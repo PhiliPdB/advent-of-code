@@ -35,14 +35,19 @@ fn main() {
 
     let mut forward = 0;
     let mut depth = 0;
+    let mut aim = 0;
 
     for direction in input {
         match direction {
-            Direction::Forward(x) => forward += x,
-            Direction::Down(x)    => depth += x,
-            Direction::Up(x)      => depth -= x,
+            Direction::Forward(x) => {
+                forward += x;
+                depth   += aim * x;
+            },
+            Direction::Down(x)    => aim += x,
+            Direction::Up(x)      => aim -= x,
         }
     }
 
-    println!("Answer: {}", forward * depth);
+    println!("Answer part 1: {}", forward * aim);
+    println!("Answer part 2: {}", forward * depth);
 }
