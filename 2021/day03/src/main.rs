@@ -31,6 +31,37 @@ fn get_gamma(report: &Vec<Vec<i32>>) -> i32 {
     gamma
 }
 
+fn find_rating(report: &Vec<Vec<i32>>, criteria: &dyn Fn(i32, i32) -> bool) -> i32 {
+    let mut values_left = report.clone();
+    let mut current_bit = 0;
+    while values_left.len() > 1 {
+        let bit_criteria =
+            if criteria(values_left.iter().map(|v| v[current_bit]).sum::<i32>(), (values_left.len() as f64 / 2_f64).ceil() as i32) {
+                1
+            } else {
+                0
+            };
+
+        // Filter the values that are left based on the bit criteria.
+        values_left = values_left.iter()
+            .filter(|v| v[current_bit] == bit_criteria)
+            .cloned() // Doesn't look very performant...
+            .collect();
+
+        // Look at the next bit
+        current_bit += 1;
+    }
+
+    // Convert to decimal
+    let mut value = values_left[0].iter()
+        .fold(0, |acc, b| {
+            (acc | b) << 1
+        });
+    value >>= 1;
+
+    value
+}
+
 fn main() {
     let input: Vec<_> = include_str!("../input.txt")
         .lines()
@@ -41,9 +72,17 @@ fn main() {
         }).collect::<Vec<_>>())
         .collect();
 
+    // Part 1
 
     let gamma = get_gamma(&input);
     let epsilon = !gamma & BIT_MASK;
 
     println!("Power consumption rate: {}", gamma * epsilon);
+
+    // Part 2
+
+    let oxygen_generator_rating = find_rating(&input, &|x, y| x >= y);
+    let co2_scrubber_rating = find_rating(&input, &|x, y| x < y);
+
+    println!("Life support rating: {}", oxygen_generator_rating * co2_scrubber_rating);
 }
