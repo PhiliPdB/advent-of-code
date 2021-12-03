@@ -31,7 +31,9 @@ fn get_gamma(report: &[Vec<i32>]) -> i32 {
     gamma
 }
 
-fn find_rating(report: &[Vec<i32>], criteria: &dyn Fn(i32, i32) -> bool) -> i32 {
+fn find_rating<F>(report: &[Vec<i32>], criteria: F) -> i32
+    where F: Fn(i32, i32) -> bool
+{
     let mut values_left = report.to_owned();
     let mut current_bit = 0;
     while values_left.len() > 1 {
@@ -43,10 +45,7 @@ fn find_rating(report: &[Vec<i32>], criteria: &dyn Fn(i32, i32) -> bool) -> i32 
             };
 
         // Filter the values that are left based on the bit criteria.
-        values_left = values_left.iter()
-            .filter(|v| v[current_bit] == bit_criteria)
-            .cloned() // Doesn't look very performant...
-            .collect();
+        values_left.retain(|v| v[current_bit] == bit_criteria);
 
         // Look at the next bit
         current_bit += 1;
