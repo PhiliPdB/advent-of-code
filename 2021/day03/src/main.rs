@@ -80,8 +80,8 @@ fn main() {
 
     // Part 2
 
-    let oxygen_generator_rating = find_rating(&input, &|x, y| x >= y);
-    let co2_scrubber_rating = find_rating(&input, &|x, y| x < y);
+    let oxygen_generator_rating = find_rating(&input, |x, y| x >= y);
+    let co2_scrubber_rating = find_rating(&input, |x, y| x < y);
 
     println!("Life support rating: {}", oxygen_generator_rating * co2_scrubber_rating);
 }
