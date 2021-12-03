@@ -12,7 +12,7 @@ const BIT_MASK: i32 = {
     mask
 };
 
-fn get_gamma(report: &Vec<Vec<i32>>) -> i32 {
+fn get_gamma(report: &[Vec<i32>]) -> i32 {
     let report_half_size = (report.len() / 2) as i32;
 
     let mut gamma = 0;
@@ -31,8 +31,8 @@ fn get_gamma(report: &Vec<Vec<i32>>) -> i32 {
     gamma
 }
 
-fn find_rating(report: &Vec<Vec<i32>>, criteria: &dyn Fn(i32, i32) -> bool) -> i32 {
-    let mut values_left = report.clone();
+fn find_rating(report: &[Vec<i32>], criteria: &dyn Fn(i32, i32) -> bool) -> i32 {
+    let mut values_left = report.to_owned();
     let mut current_bit = 0;
     while values_left.len() > 1 {
         let bit_criteria =
