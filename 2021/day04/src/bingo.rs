@@ -53,8 +53,7 @@ impl Bingo {
         self.unmarked_numbers.keys().sum()
     }
 
-
-    fn check_bingo(&self) -> bool {
+    pub fn check_bingo(&self) -> bool {
         // Check rows
         if self.marked_fields.iter().any(|row| row.iter().all(|&n| n)) {
             true
