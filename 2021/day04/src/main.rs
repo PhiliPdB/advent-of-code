@@ -20,6 +20,9 @@ fn main() {
         bingo_boards.push(Bingo::new(&input[i..i+5]));
     }
 
+    // Keep track of the bingo scores
+    let mut bingo_scores = Vec::with_capacity(bingo_boards.len());
+
     // Start marking numbers
     for n in bingo_numbers {
         let bingos: Vec<_> = bingo_boards.iter_mut()
@@ -27,19 +30,22 @@ fn main() {
             .map(|board| board.mark_number(n))
             .collect();
 
-        // Check if there is a bingo
+        // Filter out the non-bingos, while keeping track of the board indeces with a bingo.
         let bingo_indices: Vec<_> = bingos.iter()
             .enumerate()
-            .filter(|(_, &b)| b)
-            .map(|(i, _)| i)
+            .filter_map(|(i, &b)| b.then(|| i))
             .collect();
 
         // Print score for each board that has a bingo
         for board_index in bingo_indices {
-            println!("Bingo with score: {:#5}", n * bingo_boards[board_index].get_score());
+            bingo_scores.push(n * bingo_boards[board_index].get_score());
         }
 
         // Retain the boards that don't have a bingo
         bingo_boards.retain(|board| !board.check_bingo());
     }
+
+
+    println!("Best board score:  {}", bingo_scores[0]);
+    println!("Worst board score: {}", bingo_scores[bingo_scores.len() - 1]);
 }
