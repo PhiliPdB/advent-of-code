@@ -10,6 +10,7 @@ impl Bingo {
     pub fn new(numbers: &[&str]) -> Self {
         assert_eq!(numbers.len(), 5);
 
+        // Parse the bingo board into a 2d array.
         let mut board = [[0; 5]; 5];
         for i in 0..5 {
             board[i] = numbers[i]
@@ -20,8 +21,10 @@ impl Bingo {
                 .try_into()
                 .unwrap()
         }
+        // No need for it to be mutable anymore...
         let board = board;
 
+        // Go through the board to list each number with their coordinate.
         let mut unmarked_numbers = HashMap::with_capacity(25);
         for i in 0..5 {
             for j in 0..5 {
