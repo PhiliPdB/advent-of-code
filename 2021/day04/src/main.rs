@@ -8,12 +8,13 @@ fn main() {
         .filter(|s| !s.is_empty())
         .collect();
 
-
+    // Parse the bingo numbers
     let bingo_numbers: Vec<_> = input[0]
-        .split(",")
+        .split(',')
         .map(|s| s.parse::<i32>().unwrap())
         .collect();
 
+    // Get all the bingo boards
     let mut bingo_boards = Vec::new();
     for i in (1..input.len()).step_by(5) {
         bingo_boards.push(Bingo::new(&input[i..i+5]));
@@ -33,6 +34,7 @@ fn main() {
             .map(|(i, _)| i)
             .collect();
 
+        // Print score for each board that has a bingo
         for board_index in bingo_indices {
             println!("Bingo with score: {:#5}", n * bingo_boards[board_index].get_score());
         }

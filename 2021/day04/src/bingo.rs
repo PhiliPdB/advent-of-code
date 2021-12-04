@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Bingo {
-    board: [[i32; 5]; 5],
     marked_fields: [[bool; 5]; 5],
     unmarked_numbers: HashMap<i32, (usize, usize)>,
 }
@@ -14,7 +13,7 @@ impl Bingo {
         let mut board = [[0; 5]; 5];
         for i in 0..5 {
             board[i] = numbers[i]
-                .split(" ")
+                .split(' ')
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse::<i32>().unwrap())
                 .collect::<Vec<_>>()
@@ -31,7 +30,7 @@ impl Bingo {
         }
 
         Self {
-            board, unmarked_numbers,
+            unmarked_numbers,
             marked_fields: [[false; 5]; 5],
         }
     }
