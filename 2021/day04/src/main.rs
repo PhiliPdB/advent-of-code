@@ -27,9 +27,17 @@ fn main() {
             .collect();
 
         // Check if there is a bingo
-        if let Some(board_index) = bingos.iter().position(|&b| b) {
-            println!("Bingo with score: {}", n * bingo_boards[board_index].get_score());
-            break;
+        let bingo_indices: Vec<_> = bingos.iter()
+            .enumerate()
+            .filter(|(_, &b)| b)
+            .map(|(i, _)| i)
+            .collect();
+
+        for board_index in bingo_indices {
+            println!("Bingo with score: {:#5}", n * bingo_boards[board_index].get_score());
         }
+
+        // Retain the boards that don't have a bingo
+        bingo_boards.retain(|board| !board.check_bingo());
     }
 }
