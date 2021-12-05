@@ -1,67 +1,50 @@
+use std::cmp::Ordering;
 use std::str::FromStr;
 
-type Coordinate = (usize, usize);
+pub type Coordinate = (usize, usize);
 
 #[derive(Debug)]
-struct LineSegment {
-    pub start: Coordinate,
-    pub end: Coordinate,
+pub struct LineSegment {
+    start: Coordinate,
+    end: Coordinate,
 }
 
 impl LineSegment {
-    pub fn get_coordinates_on_segment(&self) -> Vec<Coordinate> {
+    pub fn start(&self) -> Coordinate {
+        self.start
+    }
+
+    pub fn end(&self) -> Coordinate {
+        self.end
+    }
+
+    pub fn coordinates_on_segment(&self, diagonal: bool) -> Vec<Coordinate> {
         let mut coordinates = Vec::new();
 
-        if self.start.0 == self.end.0 {
-            // Horizontal line
+        let (mut x, mut y) = self.start;
+        let x_increment = match self.start.0.cmp(&self.end.0) {
+            Ordering::Less    =>  1,
+            Ordering::Equal   =>  0,
+            Ordering::Greater => -1,
+        };
+        let y_increment = match self.start.1.cmp(&self.end.1) {
+            Ordering::Less    =>  1,
+            Ordering::Equal   =>  0,
+            Ordering::Greater => -1,
+        };
 
-            let range =
-                if self.start.1 <= self.end.1 {
-                    self.start.1..=self.end.1
-                } else {
-                    self.end.1..=self.start.1
-                };
-
-            for y in range {
-                coordinates.push((self.start.0, y));
-            }
-        } else if self.start.1 == self.end.1 {
-            // Vertical line
-
-            let range =
-                if self.start.0 <= self.end.0 {
-                    self.start.0..=self.end.0
-                } else {
-                    self.end.0..=self.start.0
-                };
-
-            for x in range {
-                coordinates.push((x, self.start.1));
-            }
-        } else {
-            // Diagonal
-            let (mut x, mut y) = self.start;
-            let x_increment =
-                if self.start.0 <= self.end.0 {
-                    1
-                } else {
-                    -1
-                };
-            let y_increment =
-                if self.start.1 <= self.end.1 {
-                    1
-                } else {
-                    -1
-                };
-
-            while (x, y) != self.end {
-                coordinates.push((x, y));
-
-                x = (x as i32 + x_increment) as usize;
-                y = (y as i32 + y_increment) as usize;
-            }
-            coordinates.push(self.end);
+        // Check if we need to return diagonal points
+        if !diagonal && !(x_increment == 0 || y_increment == 0) {
+            return coordinates;
         }
+
+        while (x, y) != self.end {
+            coordinates.push((x, y));
+
+            x = (x as i32 + x_increment) as usize;
+            y = (y as i32 + y_increment) as usize;
+        }
+        coordinates.push(self.end);
 
         coordinates
     }
@@ -92,16 +75,16 @@ fn main() {
 
     // Get max y and x values to determine coordinates of the diagram
     let max_x = input.iter()
-        .flat_map(|l| vec![l.start.0, l.end.0])
+        .flat_map(|l| vec![l.start().0, l.end().0])
         .max().unwrap();
     let max_y = input.iter()
-        .flat_map(|l| vec![l.start.1, l.end.1])
+        .flat_map(|l| vec![l.start().1, l.end().1])
         .max().unwrap();
 
     // Create the diagram
     let mut diagram = vec![vec![0; max_x + 1]; max_y + 1];
     for line in input {
-        for (x, y) in line.get_coordinates_on_segment() {
+        for (x, y) in line.coordinates_on_segment(true) {
             diagram[y][x] += 1;
         }
     }
