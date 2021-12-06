@@ -18,9 +18,7 @@ fn main() {
 
     for _current_day in 0..TOTAL_DAYS {
         // Let all fish decrease by 1 day.
-        for day in 0..8 {
-            next_fish[day] = current_fish[day + 1];
-        }
+        next_fish[0..8].copy_from_slice(&current_fish[1..9]);
 
         // Create new fish
         next_fish[8] = current_fish[0];
