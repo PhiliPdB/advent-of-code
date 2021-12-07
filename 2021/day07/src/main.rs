@@ -24,9 +24,13 @@ fn main() {
 
     let min = *positions.iter().min().unwrap();
     let max = *positions.iter().max().unwrap();
-    let least_fuel_position = (min..max)
+    let part1_least_fuel_cost = (min..max)
+        .map(|p| constant_fuel_cost(&positions, p))
+        .min().unwrap();
+    let part2_least_fuel_cost = (min..max)
         .map(|p| fuel_cost(&positions, p))
         .min().unwrap();
 
-    println!("Least fuel cost: {}", least_fuel_position);
+    println!("Part1 least fuel cost: {:#8}", part1_least_fuel_cost);
+    println!("Part2 least fuel cost: {:#8}", part2_least_fuel_cost);
 }
