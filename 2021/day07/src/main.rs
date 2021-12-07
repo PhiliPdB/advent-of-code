@@ -1,7 +1,18 @@
 
-fn fuel_cost(positions: &Vec<i32>, move_to: i32) -> i32 {
+fn constant_fuel_cost(positions: &Vec<i32>, move_to: i32) -> i32 {
     positions.iter()
         .map(|p| (p - move_to).abs())
+        .sum()
+}
+
+fn fuel_cost(positions: &Vec<i32>, move_to: i32) -> i32 {
+    positions.iter()
+        .map(|p| {
+            let difference = (p - move_to).abs();
+
+            // NOTE: 1 + 2 + ... + n == n(n+1) / 2
+            (difference * (difference + 1)) / 2
+        })
         .sum()
 }
 
