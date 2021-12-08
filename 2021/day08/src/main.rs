@@ -38,7 +38,7 @@ impl<'a> Note<'a> {
             p.len() == 5 && !p.contains(segment_e) && !contains_digit(p, digit_3)
         }).unwrap();
 
-        let digits = vec![
+        let digits = [
             digit_0, digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7, digit_8, digit_9,
         ];
 
@@ -46,7 +46,7 @@ impl<'a> Note<'a> {
             .fold(0, |acc, p| acc * 10 + find_digit(&digits, p))
     }
 
-    pub fn from_str(s: &'a str) -> Self {
+    pub fn new(s: &'a str) -> Self {
         let parts: Vec<_> = s.split(" | ").collect();
 
         Self {
@@ -60,7 +60,7 @@ fn contains_digit(x: &str, y: &str) -> bool {
     y.chars().all(|c| x.contains(c))
 }
 
-fn find_digit(digits: &Vec<&&str>, pattern: &str) -> i32 {
+fn find_digit(digits: &[&&str], pattern: &str) -> i32 {
     digits.iter()
         .position(|d| d.len() == pattern.len() && contains_digit(d, pattern))
         .unwrap() as i32
@@ -69,7 +69,7 @@ fn find_digit(digits: &Vec<&&str>, pattern: &str) -> i32 {
 fn main() {
     let input: Vec<_> = include_str!("../input.txt")
         .lines()
-        .map(|s| Note::from_str(s))
+        .map(Note::new)
         .collect();
 
     // Part 1
