@@ -32,6 +32,7 @@ fn find_low_points(heightmap: &[Vec<u8>]) -> Vec<(u8, usize, usize)> {
 }
 
 fn basin_size(heightmap: &[Vec<u8>], x: usize, y: usize) -> (i32, HashSet<(usize, usize)>) {
+    // Perform BFS from lowest point, to find out the basin size.
     let mut basin_size = 0;
     let mut queue = VecDeque::from([(x, y)]);
     let mut visited = HashSet::new();
@@ -49,6 +50,7 @@ fn basin_size(heightmap: &[Vec<u8>], x: usize, y: usize) -> (i32, HashSet<(usize
 
         basin_size += 1;
 
+        // Push neighbours to the queue
         if next_x != 0 {
             queue.push_back((next_x - 1, next_y));
         }
@@ -74,24 +76,29 @@ fn main() {
         .collect();
 
     let low_points = find_low_points(&input);
+
+    // Part 1
+
     let danger_level: i32 = low_points.iter()
         .map(|(i, _, _)| (i + 1) as i32)
         .sum();
 
     println!("Danger level: {}", danger_level);
 
+    // Part 2
+
     let mut basin_sizes = Vec::with_capacity(low_points.len());
-    let low_point_coordinates = HashSet::from_iter(
-        low_points.iter()
-            .map(|(_, x, y)| (*x, *y))
-    );
+    let mut low_point_coordinates = HashSet::with_capacity(low_points.len());
     for (_, x, y) in low_points {
         let (size, visited) = basin_size(&input, x, y);
-        if visited.intersection(&low_point_coordinates).count() == 1 {
+        // Check if we didn't already count this basin
+        if visited.intersection(&low_point_coordinates).count() == 0 {
             basin_sizes.push(size);
         }
-    }
-    basin_sizes.sort_unstable();
 
-    println!("Basin size product: {}", basin_sizes.iter().skip(basin_sizes.len() - 3).product::<i32>());
+        low_point_coordinates.insert((x, y));
+    }
+    basin_sizes.sort_unstable_by(|a, b| b.cmp(a));
+
+    println!("Basin size product: {}", basin_sizes.iter().take(3).product::<i32>());
 }
