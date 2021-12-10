@@ -46,13 +46,13 @@ fn parse_line(line: &str) -> (i32, Vec<char>) {
         }
     }
 
-    return (0, stack);
+    (0, stack)
 }
 
 fn main() {
     let input: Vec<_> = include_str!("../input.txt")
         .lines()
-        .map(|l| parse_line(l))
+        .map(parse_line)
         .collect();
 
     // Part 1
