@@ -18,7 +18,7 @@ impl Direction {
     }
 }
 
-fn move_ship(pos: &mut (i32, i32), direction: Direction, distance: i32) {
+fn move_position(pos: &mut (i32, i32), direction: Direction, distance: i32) {
     match direction {
         Direction::North => pos.0 -= distance,
         Direction::East  => pos.1 += distance,
@@ -53,13 +53,13 @@ fn main() {
         let (i, n) = instruction.split_at(1);
         let n = n.parse::<i32>().unwrap();
         match i {
-            "N" => move_ship(&mut current_position, Direction::North, n),
-            "S" => move_ship(&mut current_position, Direction::South, n),
-            "E" => move_ship(&mut current_position, Direction::East, n),
-            "W" => move_ship(&mut current_position, Direction::West, n),
+            "N" => move_position(&mut current_position, Direction::North, n),
+            "S" => move_position(&mut current_position, Direction::South, n),
+            "E" => move_position(&mut current_position, Direction::East, n),
+            "W" => move_position(&mut current_position, Direction::West, n),
             "L" => current_direction = current_direction.rotate_left(n),
             "R" => current_direction = current_direction.rotate_right(n),
-            "F" => move_ship(&mut current_position, current_direction, n),
+            "F" => move_position(&mut current_position, current_direction, n),
             _   => panic!("Invalid instruction"),
         }
     }
@@ -72,10 +72,10 @@ fn main() {
         let (i, n) = instruction.split_at(1);
         let n = n.parse::<i32>().unwrap();
         match i {
-            "N" => move_ship(&mut waypoint_position, Direction::North, n),
-            "S" => move_ship(&mut waypoint_position, Direction::South, n),
-            "E" => move_ship(&mut waypoint_position, Direction::East, n),
-            "W" => move_ship(&mut waypoint_position, Direction::West, n),
+            "N" => move_position(&mut waypoint_position, Direction::North, n),
+            "S" => move_position(&mut waypoint_position, Direction::South, n),
+            "E" => move_position(&mut waypoint_position, Direction::East, n),
+            "W" => move_position(&mut waypoint_position, Direction::West, n),
             "L" => rotate_waypoint_counter_clockwise(&mut waypoint_position, n),
             "R" => rotate_waypoint_counter_clockwise(&mut waypoint_position, 360 - n),
             "F" => move_to_waypoint(&mut ship_position, waypoint_position, n),
