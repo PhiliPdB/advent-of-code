@@ -1,2 +1,3 @@
 [workspace]
-members = ["2021/*"]
+members = ["2020/*", "2021/*"]
+exclude = ["2020/day18"]

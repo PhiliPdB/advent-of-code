@@ -7,7 +7,15 @@ name = "day01"
 version = "0.1.0"
 
 [[package]]
+name = "day01_2020"
+version = "0.1.0"
+
+[[package]]
 name = "day02"
+version = "0.1.0"
+
+[[package]]
+name = "day02_2020"
 version = "0.1.0"
 
 [[package]]
@@ -15,7 +23,15 @@ name = "day03"
 version = "0.1.0"
 
 [[package]]
+name = "day03_2020"
+version = "0.1.0"
+
+[[package]]
 name = "day04"
+version = "0.1.0"
+
+[[package]]
+name = "day04_2020"
 version = "0.1.0"
 
 [[package]]
@@ -23,7 +39,15 @@ name = "day05"
 version = "0.1.0"
 
 [[package]]
+name = "day05_2020"
+version = "0.1.0"
+
+[[package]]
 name = "day06"
+version = "0.1.0"
+
+[[package]]
+name = "day06_2020"
 version = "0.1.0"
 
 [[package]]
@@ -44,4 +68,8 @@ version = "0.1.0"
 
 [[package]]
 name = "day11"
+version = "0.1.0"
+
+[[package]]
+name = "day11_2020"
 version = "0.1.0"
