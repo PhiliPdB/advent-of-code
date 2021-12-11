@@ -38,19 +38,13 @@ fn flash(map: &mut [Vec<u8>], x: usize, y: usize) {
         // Check if this triggered the first flash for a octopus,
         // if so add the neighbours to the queue
         if map[cur_y][cur_x] == 10 {
-            for dx in [-1, 0, 1] {
-                for dy in [-1, 0, 1] {
-                    if dx == 0 && dy == 0 {
-                        continue;
-                    }
-
-                    let next_x = (cur_x as i32 + dx) as usize;
-                    let next_y = (cur_y as i32 + dy) as usize;
-                    // NOTE: If next_x (or next_y) has an overflow due to the subtraction,
-                    //       it will also result in a value bigger than the WIDTH (or HEIGHT).
-                    if next_x < WIDTH && next_y < HEIGHT {
-                        queue.push_back((next_x, next_y))
-                    }
+            for (dx, dy) in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)] {
+                let next_x = (cur_x as i32 + dx) as usize;
+                let next_y = (cur_y as i32 + dy) as usize;
+                // NOTE: If next_x (or next_y) has an overflow due to the subtraction,
+                //       it will also result in a value bigger than the WIDTH (or HEIGHT).
+                if next_x < WIDTH && next_y < HEIGHT {
+                    queue.push_back((next_x, next_y))
                 }
             }
         }
