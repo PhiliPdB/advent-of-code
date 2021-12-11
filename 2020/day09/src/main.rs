@@ -39,8 +39,8 @@ fn main() {
     // Part 1
     let first_non_valid = input.iter().enumerate()
         .skip(PREAMBLE_SIZE)
-        .filter(|(i, n)| !contains_sum(&input[i-PREAMBLE_SIZE..*i], **n))
-        .next().unwrap().1;
+        .find(|(i, n)| !contains_sum(&input[i-PREAMBLE_SIZE..*i], **n))
+        .unwrap().1;
     println!("First non-valid: {}", first_non_valid);
 
     // Part 2
