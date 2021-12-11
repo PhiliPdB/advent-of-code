@@ -30,9 +30,9 @@ fn get_seat_id(boarding_pass: &str) -> i32 {
 fn main() {
     let mut input: Vec<_> = include_str!("../input.txt")
         .lines()
-        .map(|s| get_seat_id(s))
+        .map(get_seat_id)
         .collect();
-    input.sort();
+    input.sort_unstable();
 
     // Part 1
     println!("Max seat id: {}", input[input.len() - 1]);
