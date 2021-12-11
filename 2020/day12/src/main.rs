@@ -35,7 +35,7 @@ fn move_to_waypoint(pos: &mut (i32, i32), (wp_x, wp_y): (i32, i32), n: i32) {
 fn rotate_waypoint_counter_clockwise(wp: &mut (i32, i32), deg: i32) {
     for _ in 0..(deg / 90) {
         let tmp_wp0 = wp.0;
-        wp.0 = wp.1 * -1;
+        wp.0 = -wp.1;
         wp.1 = tmp_wp0;
     }
 }
