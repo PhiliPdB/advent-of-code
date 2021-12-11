@@ -11,13 +11,13 @@ fn is_valid_passport(passport: &Passport) -> bool {
 }
 
 fn is_strict_valid_passport(passport: &Passport) -> bool {
-    return passport.contains_key("byr") && (1920..=2002).contains(&passport["byr"].parse::<i32>().unwrap())
+    passport.contains_key("byr") && (1920..=2002).contains(&passport["byr"].parse::<i32>().unwrap())
         && passport.contains_key("iyr") && (2010..=2020).contains(&passport["iyr"].parse::<i32>().unwrap())
         && passport.contains_key("eyr") && (2020..=2030).contains(&passport["eyr"].parse::<i32>().unwrap())
         && passport.contains_key("hgt") && is_valid_height(passport["hgt"])
         && passport.contains_key("hcl") && is_valid_color(passport["hcl"])
         && passport.contains_key("ecl") && ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(&passport["ecl"])
-        && passport.contains_key("pid") && passport["pid"].len() == 9 && passport["pid"].parse::<i32>().is_ok();
+        && passport.contains_key("pid") && passport["pid"].len() == 9 && passport["pid"].parse::<i32>().is_ok()
 }
 
 fn is_valid_height(height: &str) -> bool {

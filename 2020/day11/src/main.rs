@@ -80,26 +80,22 @@ impl Layout {
 
     fn occupied_neighbours(&self, x: usize, y: usize, first_seat: bool) -> u32 {
         let mut occupied_neighbours = 0;
-        for dx in [-1, 0, 1] {
-            for dy in [-1, 0, 1] {
-                if dx == 0 && dy == 0 {
-                    continue;
-                }
-
-                let mut nx = (x as i32 + dx) as usize;
-                let mut ny = (y as i32 + dy) as usize;
-                if first_seat {
-                    while nx < self.width && ny < self.height && self.get_seat(nx, ny) == SeatStatus::Floor {
-                        nx = (nx as i32 + dx) as usize;
-                        ny = (ny as i32 + dy) as usize;
-                    }
-                }
-
-                if nx < self.width && ny < self.height
-                    && self.get_seat(nx, ny) == SeatStatus::Occupied
+        for (dx, dy) in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)] {
+            let mut nx = (x as i32 + dx) as usize;
+            let mut ny = (y as i32 + dy) as usize;
+            if first_seat {
+                while nx < self.width && ny < self.height
+                    && self.get_seat(nx, ny) == SeatStatus::Floor
                 {
-                    occupied_neighbours += 1;
+                    nx = (nx as i32 + dx) as usize;
+                    ny = (ny as i32 + dy) as usize;
                 }
+            }
+
+            if nx < self.width && ny < self.height
+                && self.get_seat(nx, ny) == SeatStatus::Occupied
+            {
+                occupied_neighbours += 1;
             }
         }
         occupied_neighbours
@@ -140,7 +136,7 @@ fn main() {
 
     // Part 2
 
-    let mut part2_layout = input.clone();
+    let mut part2_layout = input;
     while part2_layout.perform_step_part2() {
     }
 

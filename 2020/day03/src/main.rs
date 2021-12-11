@@ -1,5 +1,5 @@
 
-fn trees_for_slope(map: &Vec<Vec<bool>>, (dx, dy): (usize, usize)) -> u32 {
+fn trees_for_slope(map: &[Vec<bool>], (dx, dy): (usize, usize)) -> u32 {
     let (mut x, mut y) = (0, 0);
     let mut total_trees = 0;
     let modulo = map[0].len();
