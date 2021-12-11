@@ -17,11 +17,11 @@ fn simulate_step(map: &mut [Vec<u8>]) -> u32 {
 
     // Count flashes and reset energy levels
     let mut flashes = 0;
-    for y in 0..HEIGHT {
-        for x in 0..WIDTH {
-            if map[y][x] > 9 {
+    for row in map.iter_mut() {
+        for item in row.iter_mut() {
+            if *item > 9 {
                 flashes += 1;
-                map[y][x] = 0;
+                *item = 0;
             }
         }
     }
