@@ -15,8 +15,8 @@ fn simulate_step(map: &mut [Vec<u8>]) -> u32 {
         }
     }
 
-    let mut flashes = 0;
     // Count flashes and reset energy levels
+    let mut flashes = 0;
     for y in 0..HEIGHT {
         for x in 0..WIDTH {
             if map[y][x] > 9 {
@@ -46,8 +46,9 @@ fn flash(map: &mut [Vec<u8>], x: usize, y: usize) {
 
                     let next_x = (cur_x as i32 + dx) as usize;
                     let next_y = (cur_y as i32 + dy) as usize;
-                    if next_x < WIDTH && next_y < HEIGHT
-                    {
+                    // NOTE: If next_x (or next_y) has an overflow due to the subtraction,
+                    //       it will also result in a value bigger than the WIDTH (or HEIGHT).
+                    if next_x < WIDTH && next_y < HEIGHT {
                         queue.push_back((next_x, next_y))
                     }
                 }
@@ -64,8 +65,21 @@ fn main() {
         .collect();
 
     let mut total_flashes = 0;
-    for _ in 0..STEPS {
-        total_flashes += simulate_step(&mut input);
+    let mut current_step = 0;
+    loop {
+        let flashes = simulate_step(&mut input);
+
+        // Only count the first few steps for the amount of flashes
+        if current_step < STEPS {
+            total_flashes += flashes;
+        }
+        // Check if the whole grid flashed to see if we have synchronisation
+        if flashes == (WIDTH * HEIGHT) as u32 {
+            break;
+        }
+        current_step += 1;
     }
-    println!("Total flashes: {}", total_flashes);
+    println!("Total flashes (in first {} steps): {}", STEPS, total_flashes);
+
+    println!("Synchronisation in step: {}", current_step + 1);
 }
