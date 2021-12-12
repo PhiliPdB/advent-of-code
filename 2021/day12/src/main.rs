@@ -51,15 +51,19 @@ impl Graph {
 }
 
 
-fn paths(graph: &Graph) -> i32 {
+fn paths(graph: &Graph, allow_visiting_twice: bool) -> i32 {
     let mut paths = 0;
-    let mut queue = VecDeque::from([(graph.start_vertex, HashSet::new())]);
-    // let mut visited = HashSet::new();
+    let mut queue = VecDeque::from([(graph.start_vertex, HashSet::new(), HashSet::new())]);
 
-    while let Some((current, visited)) = queue.pop_front() {
+    while let Some((current, visited, visited_twice)) = queue.pop_front() {
         let mut new_visited = visited;
+        let mut new_visited_twice = visited_twice;
         if !graph.big_cave[current as usize] && !new_visited.insert(current) {
-            continue;
+            if allow_visiting_twice && new_visited_twice.len() < 1 {
+                new_visited_twice.insert(current);
+            } else {
+                continue;
+            }
         }
 
         if current == graph.end_vertex {
@@ -69,11 +73,10 @@ fn paths(graph: &Graph) -> i32 {
 
         for neighbour in &graph.adjacency_list[current as usize] {
             if *neighbour != graph.start_vertex {
-                queue.push_back((*neighbour, new_visited.clone()));
+                queue.push_back((*neighbour, new_visited.clone(), new_visited_twice.clone()));
             }
         }
     }
-    // println!("{:?}", visited);
 
     paths
 }
@@ -82,11 +85,6 @@ fn paths(graph: &Graph) -> i32 {
 fn main() {
     let input = Graph::new(include_str!("../input.txt"));
 
-    println!("{:?}", input);
-
-    let total_paths = paths(&input);
-    println!("Paths: {}", total_paths);
-
-
-
+    println!("[Part 1] Paths: {:#5}", paths(&input, false));
+    println!("[Part 2] Paths: {:#5}", paths(&input, true));
 }
