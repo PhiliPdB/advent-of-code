@@ -53,22 +53,16 @@ fn main() {
     }
 
     // Print the code
+    println!("[Part 2]");
 
     let max_x = dots.iter().max_by(|(x1, _), (x2, _)| x1.cmp(x2)).unwrap().0 as usize;
     let max_y = dots.iter().max_by(|(_, y1), (_, y2)| y1.cmp(y2)).unwrap().1 as usize;
-    let mut grid = vec![vec![false; max_x + 1]; max_y + 1];
+    let mut grid = vec![vec![" "; max_x + 1]; max_y + 1];
     for (x, y) in dots {
-        grid[y as usize][x as usize] = true;
+        grid[y as usize][x as usize] = "\u{2588}";
     }
 
     for row in grid {
-        for item in row {
-            if item {
-                print!("#");
-            } else {
-                print!(".");
-            }
-        }
-        println!();
+        println!("{}", row.concat());
     }
 }
