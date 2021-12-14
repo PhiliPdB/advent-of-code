@@ -46,7 +46,7 @@ fn main() {
     }
 
     // Count each character in the string
-    let counts: HashMap<char, u64> = pair_counts.iter()
+    let counts: Vec<u64> = pair_counts.iter()
         .fold(HashMap::new(), |mut acc: HashMap<char, u64>, ([c1, c2], count)| {
             *acc.entry(*c1).or_default() += *count;
             *acc.entry(*c2).or_default() += *count;
@@ -54,14 +54,14 @@ fn main() {
             acc
         })
         .into_iter()
-        .map(|(k, v)| {
+        .map(|(_, v)| {
             // Each character is counted double (expect start and end characters), so divide by 2 and ceil.
-            (k, (v as f64 / 2_f64).ceil() as u64)
+            (v as f64 / 2_f64).ceil() as u64
         })
         .collect();
 
-    let least_common_count = counts.values().min().unwrap();
-    let most_common_count = counts.values().max().unwrap();
+    let least_common_count = counts.iter().min().unwrap();
+    let most_common_count = counts.iter().max().unwrap();
 
     println!("Count: {}", most_common_count - least_common_count);
 }
