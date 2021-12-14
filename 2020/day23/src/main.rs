@@ -1,59 +1,89 @@
 
-const NUMBERS: u32 = 9;
+const PART2: bool = true;
+const TOTAL_NUMBERS: u32 = if PART2 {
+    1_000_000
+} else {
+    9
+};
 
+const ITERATIONS: u32 = if PART2 {
+    10_000_000
+} else {
+    100
+};
 
-// const INPUT: [u32; 9] = [9, 1, 6, 4, 3, 8, 2, 7, 5];
 
 fn main() {
-    // let mut input: [u32; NUMBERS as usize] = [3, 8, 9, 1, 2, 5, 4, 6, 7]
-    let mut input: Vec<_> = [9, 1, 6, 4, 3, 8, 2, 7, 5].iter()
-        .map(|i| i - 1)
-        .collect();
+    // Test input
+    // let input: [u32; 9] = [3, 8, 9, 1, 2, 5, 4, 6, 7]
+    //    .map(|i| i - 1);
+    // Real input
+    let input: [u32; 9] = [9, 1, 6, 4, 3, 8, 2, 7, 5]
+        .map(|i| i - 1);
+
+    // Create list where the index number points to the next number
+    let mut next_number = vec![0; TOTAL_NUMBERS as usize];
+    for i in input.windows(2) {
+        next_number[i[0] as usize] = i[1] as u32;
+    }
+
+    if PART2 {
+        next_number[input[input.len() - 1] as usize] = 9;
+        for i in 9..(TOTAL_NUMBERS - 1) {
+            next_number[i as usize] = i + 1;
+        }
+        next_number[TOTAL_NUMBERS as usize - 1] = input[0];
+    } else {
+        // Link last number to the first
+        next_number[input[input.len() - 1] as usize] = input[0];
+    }
 
 
-    for _move in 0..100 {
+    let mut current_cup = input[0];
+    for _move in 0..ITERATIONS {
+        let next1 = next_number[current_cup as usize];
+        let next2 = next_number[next1 as usize];
+        let next3 = next_number[next2 as usize];
+
         let target = {
-            let mut target = input[0] - 1;
-            if target > NUMBERS {
-                target = NUMBERS - 1;
+            let mut target = current_cup - 1;
+            if target > TOTAL_NUMBERS {
+                target = TOTAL_NUMBERS - 1;
             }
-
-            while input[1..4].contains(&target) {
+            while target == next1 || target == next2 || target == next3 {
                 target -= 1;
-                if target > NUMBERS {
-                    target = NUMBERS - 1;
+
+                if target > TOTAL_NUMBERS {
+                    target = TOTAL_NUMBERS - 1;
                 }
             }
+
             target
         };
 
-        // println!("Target: {}", target);
-        let target_location = input.iter().position(|i| *i == target).unwrap() - 1;
-        input.rotate_left(1);
-        // println!("Location: {} in {:?}", target_location, input);
+        next_number[current_cup as usize] = next_number[next3 as usize];
+        next_number[next3 as usize] = next_number[target as usize];
+        next_number[target as usize] = next1;
 
-        let sub = target_location - 2;
-        let picked_up = &input[0..3].to_owned();
-        for i in 0..sub {
-            input[i] = input[i + 3];
-        }
-        // println!("{:?}", input);
-        for (i, cup) in picked_up.iter().enumerate() {
-            input[sub + i] = *cup;
-        }
 
-        // println!("Input: {:?}", &input);
-
-        // TODO
-
-        // Update current cup
-        // current_cup += 1;
-        // current_cup %= NUMBERS;
+        current_cup = next_number[current_cup as usize];
     }
 
-    while input[0] != 0 {
-        input.rotate_left(1);
-    }
 
-    println!("Result: {}", input.iter().skip(1).map(|i| i +  1).fold(0, |acc, n| acc * 10 + n));
+    if PART2 {
+        let next1 = next_number[0] as u64;
+        let next2 = next_number[next1 as usize] as u64;
+
+        println!("Result: {}", (next1 + 1) * (next2 + 1));
+    } else {
+        let mut result = Vec::new();
+        let mut current = 0;
+        for _ in 0..(TOTAL_NUMBERS - 1) {
+            result.push(next_number[current]);
+
+            current = next_number[current] as usize;
+        }
+
+        println!("Result: {}", result.iter().map(|i| i +  1).fold(0, |acc, n| acc * 10 + n));
+    }
 }
