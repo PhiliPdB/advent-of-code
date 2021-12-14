@@ -4,16 +4,16 @@ use std::mem;
 const STEPS: usize = 40;
 
 
-fn perform_step(template: &mut HashMap<[char; 2], u64>, rules: &HashMap<[char; 2], char>) {
+fn perform_step(pair_counts: &mut HashMap<[char; 2], u64>, rules: &HashMap<[char; 2], char>) {
     let mut new_pairs: HashMap<[char; 2], u64> = HashMap::new();
 
-    for (pair, count) in template.iter() {
+    for (pair, count) in pair_counts.iter() {
         let item = rules[pair];
         *new_pairs.entry([pair[0], item]).or_default() += *count;
         *new_pairs.entry([item, pair[1]]).or_default() += *count;
     }
 
-    mem::swap(template, &mut new_pairs);
+    mem::swap(pair_counts, &mut new_pairs);
 }
 
 
