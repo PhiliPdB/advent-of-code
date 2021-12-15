@@ -8,15 +8,15 @@ struct HeapItem {
     risk_level: u32,
 }
 
-impl PartialOrd for HeapItem {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        other.risk_level.partial_cmp(&self.risk_level)
-    }
-}
-
 impl Ord for HeapItem {
     fn cmp(&self, other: &Self) -> Ordering {
         other.risk_level.cmp(&self.risk_level)
+    }
+}
+
+impl PartialOrd for HeapItem {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
