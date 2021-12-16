@@ -12,7 +12,7 @@ fn game_value(player1_cards: &VecDeque<u16>, player2_cards: &VecDeque<u16>) -> u
 fn combat(mut player1_cards: VecDeque<u16>, mut player2_cards: VecDeque<u16>, recursive: bool) -> (bool, VecDeque<u16>) {
     let mut games = HashSet::new();
 
-    while player1_cards.len() > 0 && player2_cards.len() > 0 {
+    while !player1_cards.is_empty() && !player2_cards.is_empty() {
         let game_value = game_value(&player1_cards, &player2_cards);
         if recursive && !games.insert(game_value) {
             // Game immediately ends in a win for player 1
@@ -44,7 +44,7 @@ fn combat(mut player1_cards: VecDeque<u16>, mut player2_cards: VecDeque<u16>, re
         }
     }
 
-    let player1_won = player1_cards.len() > 0;
+    let player1_won = !player1_cards.is_empty();
     let winning_cards =
         if player1_won {
             player1_cards
