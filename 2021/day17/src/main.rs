@@ -1,14 +1,27 @@
 use std::cmp;
 
+// Example input
+// const TARGET_X_MIN: i32 =  20;
+// const TARGET_X_MAX: i32 =  30;
+// const TARGET_Y_MIN: i32 = -10;
+// const TARGET_Y_MAX: i32 =  -5;
+// Real input
+const TARGET_X_MIN: i32 =   48;
+const TARGET_X_MAX: i32 =   70;
+const TARGET_Y_MIN: i32 = -189;
+const TARGET_Y_MAX: i32 = -148;
 
-fn simulate(start_x: i32, start_y: i32) -> (i32, i32, i32) {
+
+fn simulate(start_x: i32, start_y: i32) -> (bool, i32) {
     let mut current_x = 0;
     let mut vx = start_x;
     let mut current_y = 0;
     let mut vy = start_y;
-    let mut max_y = start_y;
 
-    while current_y >= 0 {
+    let mut max_y = 0;
+    let mut hit_target = false;
+
+    while current_y + vy >= TARGET_Y_MIN && current_x + vx <= TARGET_X_MAX {
         current_x += vx;
         current_y += vy;
 
@@ -18,41 +31,34 @@ fn simulate(start_x: i32, start_y: i32) -> (i32, i32, i32) {
         if current_y > max_y {
             max_y = current_y;
         }
+
+        if TARGET_X_MIN <= current_x && current_x <= TARGET_X_MAX
+            && TARGET_Y_MIN <= current_y && current_y <= TARGET_Y_MAX
+        {
+            hit_target = true;
+            break;
+        }
     }
 
-    (current_x, current_y, max_y)
+    (hit_target, max_y)
 }
 
 fn main() {
-    // Example input
-    // let target_x_min =  20;
-    // let target_x_max =  30;
-    // let target_y_min = -10;
-    // let target_y_max =  -5;
-    // Real input
-    let target_x_min =   48;
-    let target_x_max =   70;
-    let target_y_min = -189;
-    let target_y_max = -148;
-
+    let mut total_hits = 0;
     let mut y_max = i32::MIN;
-    let mut pos = (0, 0);
-    for x in 0..target_x_min {
-        let mut last_successful = false;
-        for y in 0..-target_y_min {
-            let (tx, ty, my) = simulate(x, y);
-            if target_x_min <= tx && tx <= target_x_max && target_y_min <= ty && ty <= target_y_max {
-                last_successful = true;
+    for x in 1..(TARGET_X_MAX + 1) {
+        for y in TARGET_Y_MIN..(-TARGET_Y_MIN + 1) {
+            let (hit_target, my) = simulate(x, y);
+            if hit_target {
+                total_hits += 1;
+
                 if my > y_max {
                     y_max = my;
-                    pos = (x, y);
                 }
-            } else if last_successful {
-                // Starting to overshoot
-                break;
             }
         }
     }
 
-    println!("Max y: {}, {:?}", y_max, pos);
+    println!("Max y: {}", y_max);
+    println!("Total hits: {}", total_hits);
 }
