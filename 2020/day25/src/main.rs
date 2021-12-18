@@ -1,5 +1,6 @@
 
 const CARD_SUBJECT_NUMBER: i64 = 7;
+#[allow(dead_code)]
 const DOOR_SUBJECT_NUMBER: i64 = 7;
 
 fn loop_size(public_key: i64, subject_number: i64) -> i64 {

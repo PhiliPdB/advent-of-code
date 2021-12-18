@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, hash_map::Entry};
 
 
 #[derive(Debug)]
@@ -22,8 +22,8 @@ impl Graph {
             let parts: Vec<_> = line.split('-').collect();
             let mut ids = Vec::with_capacity(2);
             for p in parts {
-                if !vertex_lookup.contains_key(&p) {
-                    vertex_lookup.insert(p, current_node_id);
+                if let Entry::Vacant(e) = vertex_lookup.entry(p) {
+                    e.insert(current_node_id);
                     adjacency_list.push(Vec::new());
 
                     let is_big_cave = p.chars().all(|c| c.is_uppercase());
