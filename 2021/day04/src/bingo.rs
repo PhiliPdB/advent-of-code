@@ -26,6 +26,7 @@ impl Bingo {
 
         // Go through the board to list each number with their coordinate.
         let mut unmarked_numbers = HashMap::with_capacity(25);
+        #[allow(clippy::needless_range_loop)]
         for i in 0..5 {
             for j in 0..5 {
                 unmarked_numbers.insert(board[i][j], (i, j));

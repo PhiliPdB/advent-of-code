@@ -86,8 +86,8 @@ impl SnailfishItem {
     #[inline]
     pub fn parse(input: &str) -> IResult<&str, Self> {
         alt((
-            i32.map(|n| Self::Number(n)),
-            Snailfish::parse.map(|f| Self::Pair(Box::new(f))),
+            i32.map(SnailfishItem::Number),
+            Snailfish::parse.map(|f| SnailfishItem::Pair(Box::new(f))),
         ))(input)
     }
 
@@ -142,7 +142,7 @@ impl SnailfishItem {
     }
 
     #[inline]
-    pub fn get_pair(&self) -> &Box<Snailfish> {
+    pub fn get_pair(&self) -> &Snailfish {
         match self {
             SnailfishItem::Number(_) => panic!("Not a pair"),
             SnailfishItem::Pair(sf) => sf,
