@@ -138,10 +138,8 @@ impl SnailfishItem {
 
                     if let Some(val) = left_val.map(|sfi| sfi.get_right_most_val()) {
                         *val += pair.left.get_value();
-                        *left = SnailfishItem::Number(0);
-                    } else {
-                        *left = SnailfishItem::Number(0);
                     }
+                    *left = SnailfishItem::Number(0);
 
                     true
                 } else if depth >= 3 && right.is_deepest_pair() {
@@ -155,10 +153,8 @@ impl SnailfishItem {
 
                     if let Some(val) = right_val.map(|sfi| sfi.get_left_most_val()) {
                         *val += pair.right.get_value();
-                        *right = SnailfishItem::Number(0);
-                    } else {
-                        *right = SnailfishItem::Number(0);
                     }
+                    *right = SnailfishItem::Number(0);
 
                     true
                 } else {
@@ -224,37 +220,12 @@ fn main() {
         })
         .collect();
 
-    // let mut test = parse_snailfish("[7,[6,[5,[4,[3,2]]]]]").unwrap().1;
-    // test.explode(0, None, None);
-    // println!("{}", test);
-
-    // let mut test = parse_snailfish("[[6,[5,[4,[3,2]]]],1]").unwrap().1;
-    // test.explode(0, None, None);
-    // println!("{}", test);
-
-    // let mut test = parse_snailfish("[1,[[[[2,3],4],5],6]]").unwrap().1;
-    // test.explode(0, None, None);
-    // println!("{}", test);
-
-    // let mut test = parse_snailfish("[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]").unwrap().1;
-    // test.explode(0, None, None);
-    // println!("{}", test);
-
-    // let mut test = parse_snailfish("[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]").unwrap().1;
-    // test.explode(0, None, None);
-    // println!("{}", test);
-
-    // let mut test = parse_snailfish("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]").unwrap().1;
-    // test.reduce();
-    // println!("{}", test);
-
     // Part 1
 
     let mut snailfish = input[0].clone();
     for sf in input.iter().skip(1).cloned() {
         snailfish = Snailfish::add(snailfish, sf);
     }
-    println!("{}", snailfish);
     println!("Magnitude: {}", snailfish.magnitude());
 
     // Part 2
