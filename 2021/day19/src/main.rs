@@ -117,13 +117,14 @@ fn main() {
 
     let mut positions = Vec::with_capacity(input.len());
     while !input.is_empty() {
-        // Go in reverse direction, such that we can keep deleting items from the input vec.
-        for i in (0..input.len()).rev() {
-            if let Some(pos) = find_scanner_pos(&mut total_scan, &input[i]) {
+        input.retain(|scanner| {
+            if let Some(pos) = find_scanner_pos(&mut total_scan, scanner) {
                 positions.push(pos);
-                input.swap_remove(i);
+                false
+            } else {
+                true
             }
-        }
+        })
     }
 
     // Part 1
