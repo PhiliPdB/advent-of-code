@@ -94,7 +94,7 @@ fn main() {
         })
         .collect();
 
-    // Do two enhancement passes
+    // Do the enhancement passes
     for i in 0..ENHANCEMENTS {
         input_image = enhancement_pass(&enhancement_algorithm, &input_image, i + 1);
     }
