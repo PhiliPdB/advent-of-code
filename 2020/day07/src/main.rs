@@ -34,14 +34,14 @@ pub fn parse_line(line: & str) -> IResult<&str, LuggageRule> {
 }
 
 fn parse_bag(input: &str) -> IResult<&str, String> {
-    map(tuple((alpha1, tag(" "), alpha1)), |(s1, _, s2)| format!("{} {}", s1, s2).to_string())(input)
+    map(tuple((alpha1, tag(" "), alpha1)), |(s1, _, s2)| format!("{} {}", s1, s2))(input)
 }
 
 fn parse_bag_item(input: &str) -> IResult<&str, (u32, String)> {
     pair(u32, preceded(tag(" "), terminated(parse_bag, pair(tag(" bag"), opt(tag("s"))))))(input)
 }
 
-
+#[allow(clippy::ptr_arg)]
 fn can_contain_bag(bag_rules: &HashMap<String, Vec<(u32, String)>>, bag: &str, search: &String) -> bool {
     let current_bag_contents: Vec<_> = bag_rules[bag].iter()
         .map(|(_, b)| b)
