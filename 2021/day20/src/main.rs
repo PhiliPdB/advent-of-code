@@ -81,7 +81,7 @@ fn main() {
 
     // Get the algorithm from the input
     let enhancement_algorithm: Vec<_> = input[0].chars()
-        .filter_map(|c| Pixel::from_char(c))
+        .filter_map(Pixel::from_char)
         .collect();
     debug_assert_eq!(enhancement_algorithm.len(), 512);
 
