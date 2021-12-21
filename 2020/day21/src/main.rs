@@ -13,8 +13,8 @@ fn main() {
             let splitted: Vec<_> = new_s.split(" (contains ").collect();
 
             (
-                splitted[0].split(' ').map(|c| String::from(c)).collect::<Vec<_>>(),
-                splitted[1].split(", ").map(|c| String::from(c)).collect::<Vec<_>>()
+                splitted[0].split(' ').map(String::from).collect::<Vec<_>>(),
+                splitted[1].split(", ").map(String::from).collect::<Vec<_>>()
             )
         })
         .collect();
@@ -36,7 +36,9 @@ fn main() {
         let hs_ingredients: HashSet<_> = HashSet::from_iter(ingredients.iter().cloned());
 
         for a in allergens {
-            ingredient_lookup.entry(a.clone()).or_insert(all_ingredients.keys().cloned().collect::<HashSet<_>>()).retain(|s| hs_ingredients.contains(s));
+            ingredient_lookup.entry(a.clone())
+                .or_insert_with(|| all_ingredients.keys().cloned().collect::<HashSet<_>>())
+                .retain(|s| hs_ingredients.contains(s));
         }
     }
 
@@ -52,7 +54,7 @@ fn main() {
             }
         }
 
-        made_changes = to_remove.len() > 0 && to_remove.len() != ingredient_lookup.len();
+        made_changes = !to_remove.is_empty() && to_remove.len() != ingredient_lookup.len();
         for (k, v) in ingredient_lookup.iter_mut() {
             for (a, i) in &to_remove {
                 if k.ne(a) {
