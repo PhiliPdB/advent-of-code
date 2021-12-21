@@ -1,3 +1,4 @@
+use cached::proc_macro::cached;
 
 // Test input
 // const PLAYER1_STARTING: i32 = 4;
@@ -41,14 +42,20 @@ fn play_deterministic() -> i32 {
     (round as i32) * 3 * player_scores[0].min(player_scores[1])
 }
 
-fn play_dirac(positions: [i32; 2], scores: [i32; 2], turn: usize) -> [i64; 2] {
+#[cached]
+fn play_dirac(positions: [i32; 2], scores: [i32; 2], player1_turn: bool) -> [i64; 2] {
     if scores[0] >= 21 {
         return [1, 0];
     } else if scores[1] >= 21 {
         return [0, 1];
     }
 
-    let player = turn % 2;
+    let player =
+        if player1_turn {
+            0
+        } else {
+            1
+        };
     let mut p1_wins = 0;
     let mut p2_wins = 0;
 
@@ -59,7 +66,7 @@ fn play_dirac(positions: [i32; 2], scores: [i32; 2], turn: usize) -> [i64; 2] {
         new_position[player] %= 10;
         new_score[player] += new_position[player] + 1;
 
-        let [p1, p2] = play_dirac(new_position, new_score, turn + 1);
+        let [p1, p2] = play_dirac(new_position, new_score, !player1_turn);
         p1_wins += p1 * amount;
         p2_wins += p2 * amount;
     }
@@ -71,5 +78,5 @@ fn play_dirac(positions: [i32; 2], scores: [i32; 2], turn: usize) -> [i64; 2] {
 fn main() {
     println!("Part 1: {}", play_deterministic());
 
-    println!("Part 2: {:?}", play_dirac([PLAYER1_STARTING - 1, PLAYER2_STARTING - 1], [0, 0], 0).iter().max().unwrap())
+    println!("Part 2: {:?}", play_dirac([PLAYER1_STARTING - 1, PLAYER2_STARTING - 1], [0, 0], true).iter().max().unwrap())
 }
