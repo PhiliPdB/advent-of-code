@@ -7,10 +7,14 @@ use cached::proc_macro::cached;
 const PLAYER1_STARTING: i32 = 5;
 const PLAYER2_STARTING: i32 = 6;
 
-struct DeterministicDie(i32);
+pub struct DeterministicDie(i32);
 
 impl DeterministicDie {
-    fn roll(&mut self) -> i32 {
+    pub fn new() -> Self {
+        Self(1)
+    }
+
+    pub fn roll(&mut self) -> i32 {
         let value = self.0;
         self.0 += 1;
         if self.0 > 100 {
@@ -20,13 +24,20 @@ impl DeterministicDie {
     }
 }
 
+impl Default for DeterministicDie {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+
 fn play_deterministic() -> i32 {
     let mut player_positions = [PLAYER1_STARTING - 1, PLAYER2_STARTING - 1];
     let mut player_scores = [0, 0];
 
 
     let mut round = 0;
-    let mut die = DeterministicDie(1);
+    let mut die = DeterministicDie::new();
     while player_scores[0] < 1000 && player_scores[1] < 1000 {
         let player = round % 2;
 
@@ -76,7 +87,8 @@ fn play_dirac(positions: [i32; 2], scores: [i32; 2], player1_turn: bool) -> [i64
 
 
 fn main() {
-    println!("Part 1: {}", play_deterministic());
-
-    println!("Part 2: {:?}", play_dirac([PLAYER1_STARTING - 1, PLAYER2_STARTING - 1], [0, 0], true).iter().max().unwrap())
+    // Part 1
+    println!("Deterministic game score: {}", play_deterministic());
+    // Part 2
+    println!("Dirac game most wins: {:?}", play_dirac([PLAYER1_STARTING - 1, PLAYER2_STARTING - 1], [0, 0], true).iter().max().unwrap())
 }
