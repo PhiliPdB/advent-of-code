@@ -1,8 +1,16 @@
+use ndarray::Array3;
+
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Status {
     On,
     Off
+}
+
+impl Default for Status {
+    fn default() -> Self {
+        Status::Off
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -43,36 +51,35 @@ fn get_on_cubes(commands: &[Command]) -> u64 {
         })
         .collect();
 
-    // Create 3D vector to save the status of each cube
-    let mut cube_status = vec![vec![vec![Status::Off; intersection_x.len() - 1]; intersection_y.len() - 1]; intersection_z.len() - 1];
+    // Create 3D-matrix to save the status of each cube
+    let mut cube_status = Array3::default((intersection_x.len() - 1, intersection_y.len() - 1, intersection_z.len() - 1));
 
     for command in &intersect_commands {
-        for z in command.z_start..command.z_end {
+        for x in command.x_start..command.x_end {
             for y in command.y_start..command.y_end {
-                for x in command.x_start..command.x_end {
-                    cube_status[z as usize][y as usize][x as usize] = command.command;
+                for z in command.z_start..command.z_end {
+                    cube_status[[x as usize, y as usize, z as usize]] = command.command;
                 }
             }
         }
     }
 
-
     // Count the volume of the 'on'-cubes
-    cube_status.iter()
+    cube_status.outer_iter()
         .enumerate()
-        .map(|(z, square)| {
-            let dz = (intersection_z[z + 1] - intersection_z[z]) as u64;
+        .map(|(x, square)| {
+            let dx = (intersection_x[x + 1] - intersection_x[x]) as u64;
 
-            square.iter().enumerate()
+            square.outer_iter().enumerate()
                 .map(|(y, row)| {
                     let dy = (intersection_y[y + 1] - intersection_y[y]) as u64;
 
-                    let inter_prod = dz * dy;
+                    let inter_prod = dx * dy;
                     row.iter().enumerate()
-                        .map(|(x, status)| if *status == Status::On {
-                            let dx = (intersection_x[x + 1] - intersection_x[x]) as u64;
+                        .map(|(z, status)| if *status == Status::On {
+                            let dz = (intersection_z[z + 1] - intersection_z[z]) as u64;
 
-                            inter_prod * dx
+                            inter_prod * dz
                         } else {
                             0
                         })
