@@ -44,13 +44,13 @@ fn get_on_cubes(commands: &[Command]) -> u64 {
         .collect();
 
     // Create 3D vector to save the status of each cube
-    let mut on_cubes = vec![vec![vec![Status::Off; intersection_x.len() - 1]; intersection_y.len() - 1]; intersection_z.len() - 1];
+    let mut cube_status = vec![vec![vec![Status::Off; intersection_x.len() - 1]; intersection_y.len() - 1]; intersection_z.len() - 1];
 
     for command in &intersect_commands {
         for z in command.z_start..command.z_end {
             for y in command.y_start..command.y_end {
                 for x in command.x_start..command.x_end {
-                    on_cubes[z as usize][y as usize][x as usize] = command.command;
+                    cube_status[z as usize][y as usize][x as usize] = command.command;
                 }
             }
         }
@@ -58,7 +58,7 @@ fn get_on_cubes(commands: &[Command]) -> u64 {
 
 
     // Count the volume of the 'on'-cubes
-    on_cubes.into_iter()
+    cube_status.iter()
         .enumerate()
         .map(|(z, square)| {
             let dz = (intersection_z[z + 1] - intersection_z[z]) as u64;
