@@ -58,14 +58,13 @@ impl Map for Map2 {
 
                     let room = &self.rooms[space.room_index()];
 
-                    // Check bottom room
+                    // Check which slot we should move to
                     let room_slot =
                         if room[0] == Space::Open {
                             debug_assert_eq!(room[1], Space::Open);
 
                             0
                         } else if room[1] == Space::Open && room[0] == *space {
-                            // Can only move to the top room if the bottom room is filled with the correct item
                             1
                         } else {
                             continue;
@@ -91,12 +90,11 @@ impl Map for Map2 {
                     continue;
                 }
 
+                // Check from which slot in the room we should move
                 let room_slot =
                     if self.rooms[room][1] == Space::Open && self.rooms[room][0] != Space::Open {
-                        // Move from room 0
                         0
                     } else if self.rooms[room][1] != Space::Open {
-                        // Move from room 1
                         1
                     } else {
                         continue;
@@ -174,7 +172,7 @@ impl Map for Map4 {
                     }
 
                     let room = &self.rooms[space.room_index()];
-                    // Check bottom room
+                    // Check which slot we can move to
                     let room_slot =
                         if room[0] == Space::Open {
                             debug_assert_eq!(room[1], Space::Open);
@@ -183,18 +181,15 @@ impl Map for Map4 {
 
                             0
                         } else if room[1] == Space::Open && room[0] == *space {
-                            // Check room 1
                             debug_assert_eq!(room[2], Space::Open);
                             debug_assert_eq!(room[3], Space::Open);
 
                             1
                         } else if room[2] == Space::Open && room[1] == *space && room[0] == *space {
-                            // Check room 2
                             debug_assert_eq!(room[3], Space::Open);
 
                             2
                         } else if room[3] == Space::Open && room[2] == *space && room[1] == *space && room[0] == *space {
-                            // Can top room
                             3
                         } else {
                             continue;
@@ -220,18 +215,15 @@ impl Map for Map4 {
                     continue;
                 }
 
+                // Check from which slot in the room we should move
                 let room_slot =
                     if self.rooms[room][3] == Space::Open && self.rooms[room][2] == Space::Open && self.rooms[room][1] == Space::Open && self.rooms[room][0] != Space::Open {
-                        // Move from room 0
                         0
                     } else if self.rooms[room][3] == Space::Open && self.rooms[room][2] == Space::Open && self.rooms[room][1] != Space::Open {
-                        // Move from room 1
                         1
                     } else if self.rooms[room][3] == Space::Open && self.rooms[room][2] != Space::Open {
-                        // Move from room 2
                         2
                     } else if self.rooms[room][3] != Space::Open {
-                        // Move from room 3
                         3
                     } else {
                         continue;
