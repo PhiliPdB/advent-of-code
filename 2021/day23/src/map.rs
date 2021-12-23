@@ -62,7 +62,7 @@ impl Map for Map2 {
                     if room[0] == Space::Open {
                         debug_assert_eq!(room[1], Space::Open);
 
-                        let mut new_map = self.clone();
+                        let mut new_map = *self;
                         new_map.hallway[i] = Space::Open;
                         new_map.rooms[space.room_index()][0] = *space;
 
@@ -70,7 +70,7 @@ impl Map for Map2 {
                     } else if room[1] == Space::Open && room[0] == *space {
                         // Can only move to the top room if the bottom room is filled with the correct item
 
-                        let mut new_map = self.clone();
+                        let mut new_map = *self;
                         new_map.hallway[i] = Space::Open;
                         new_map.rooms[space.room_index()][1] = *space;
 
@@ -93,14 +93,14 @@ impl Map for Map2 {
 
                 if self.rooms[room][1] == Space::Open && self.rooms[room][0] != Space::Open {
                     // Move from room 0
-                    let mut new_map = self.clone();
+                    let mut new_map = *self;
                     new_map.hallway[hallway_index] = self.rooms[room][0];
                     new_map.rooms[room][0] = Space::Open;
 
                     moves.push(Node(new_map, (Self::distance_to_room(hallway_index, room) + 2) * self.rooms[room][0].multiplier()));
                 } else if self.rooms[room][1] != Space::Open {
                     // Move from room 1
-                    let mut new_map = self.clone();
+                    let mut new_map = *self;
                     new_map.hallway[hallway_index] = self.rooms[room][1];
                     new_map.rooms[room][1] = Space::Open;
 
@@ -179,7 +179,7 @@ impl Map for Map4 {
                         debug_assert_eq!(room[2], Space::Open);
                         debug_assert_eq!(room[3], Space::Open);
 
-                        let mut new_map = self.clone();
+                        let mut new_map = *self;
                         new_map.hallway[i] = Space::Open;
                         new_map.rooms[space.room_index()][0] = *space;
 
@@ -189,7 +189,7 @@ impl Map for Map4 {
                         debug_assert_eq!(room[2], Space::Open);
                         debug_assert_eq!(room[3], Space::Open);
 
-                        let mut new_map = self.clone();
+                        let mut new_map = *self;
                         new_map.hallway[i] = Space::Open;
                         new_map.rooms[space.room_index()][1] = *space;
 
@@ -198,14 +198,14 @@ impl Map for Map4 {
                         // Check room 2
                         debug_assert_eq!(room[3], Space::Open);
 
-                        let mut new_map = self.clone();
+                        let mut new_map = *self;
                         new_map.hallway[i] = Space::Open;
                         new_map.rooms[space.room_index()][2] = *space;
 
                         moves.push(Node(new_map, (Self::distance_to_room(i, space.room_index()) + 2) * space.multiplier()));
                     } else if room[3] == Space::Open && room[2] == *space && room[1] == *space && room[0] == *space {
                         // Can top room
-                        let mut new_map = self.clone();
+                        let mut new_map = *self;
                         new_map.hallway[i] = Space::Open;
                         new_map.rooms[space.room_index()][3] = *space;
 
@@ -228,28 +228,28 @@ impl Map for Map4 {
 
                 if self.rooms[room][3] == Space::Open && self.rooms[room][2] == Space::Open && self.rooms[room][1] == Space::Open && self.rooms[room][0] != Space::Open {
                     // Move from room 0
-                    let mut new_map = self.clone();
+                    let mut new_map = *self;
                     new_map.hallway[hallway_index] = self.rooms[room][0];
                     new_map.rooms[room][0] = Space::Open;
 
                     moves.push(Node(new_map, (Self::distance_to_room(hallway_index, room) + 4) * self.rooms[room][0].multiplier()));
                 } else if self.rooms[room][3] == Space::Open && self.rooms[room][2] == Space::Open && self.rooms[room][1] != Space::Open {
                     // Move from room 1
-                    let mut new_map = self.clone();
+                    let mut new_map = *self;
                     new_map.hallway[hallway_index] = self.rooms[room][1];
                     new_map.rooms[room][1] = Space::Open;
 
                     moves.push(Node(new_map, (Self::distance_to_room(hallway_index, room) + 3) * self.rooms[room][1].multiplier()));
                 } else if self.rooms[room][3] == Space::Open && self.rooms[room][2] != Space::Open {
                     // Move from room 2
-                    let mut new_map = self.clone();
+                    let mut new_map = *self;
                     new_map.hallway[hallway_index] = self.rooms[room][2];
                     new_map.rooms[room][2] = Space::Open;
 
                     moves.push(Node(new_map, (Self::distance_to_room(hallway_index, room) + 2) * self.rooms[room][2].multiplier()));
                 } else if self.rooms[room][3] != Space::Open {
                     // Move from room 3
-                    let mut new_map = self.clone();
+                    let mut new_map = *self;
                     new_map.hallway[hallway_index] = self.rooms[room][3];
                     new_map.rooms[room][3] = Space::Open;
 
