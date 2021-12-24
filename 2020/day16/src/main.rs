@@ -72,7 +72,7 @@ fn main() {
         let mut to_remove = Vec::new();
         for (i, labels) in possible_labels.iter().enumerate() {
             if labels.len() == 1 {
-                to_remove.push((i, labels.iter().next().unwrap().clone()));
+                to_remove.push((i, <&str>::clone(labels.iter().next().unwrap())));
             }
         }
 
