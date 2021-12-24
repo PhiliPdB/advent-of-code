@@ -147,12 +147,7 @@ fn main() {
         .collect();
 
     let per_digit: Vec<_> =
-        instructions.split(|i| {
-            match i {
-                Instruction::Input(_) => true,
-                _ => false,
-            }
-        })
+        instructions.split(|i| matches!(i, Instruction::Input(_)))
         .skip(1)
         .collect();
 
