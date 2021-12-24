@@ -114,6 +114,7 @@ fn digit_range(reversed: bool) -> Either<impl Iterator<Item = i32>, impl Iterato
 
 fn find_number(mem: &mut [HashMap<i32, Option<i64>>], instructions: &[&[Instruction]], start_z: i32, index: usize, highest: bool) -> Option<i64> {
     if index >= 14 {
+        // Read our 14 input numbers, so check we ended up at z == 0.
         if start_z == 0 {
             return Some(0);
         } else {
@@ -121,6 +122,13 @@ fn find_number(mem: &mut [HashMap<i32, Option<i64>>], instructions: &[&[Instruct
         }
     }
 
+    // Bind value of z from above. From experiments, it seems that z can't go back to 0 if it
+    // is higher than 26^4.
+    if start_z >= 26_i32.pow(4) {
+        return None;
+    }
+
+    // Check if we already calculated this solution
     if let Some(sol) = mem[index].get(&start_z) {
         return *sol;
     }
@@ -150,8 +158,8 @@ fn main() {
         instructions.split(|i| matches!(i, Instruction::Input(_)))
         .skip(1)
         .collect();
-
     debug_assert_eq!(per_digit.len(), 14);
+
 
     let mut memoization_table = [
         HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new(),
