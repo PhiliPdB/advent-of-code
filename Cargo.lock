@@ -327,6 +327,13 @@ name = "day24_2020"
 version = "0.1.0"
 
 [[package]]
+name = "day25"
+version = "0.1.0"
+dependencies = [
+ "hashbrown",
+]
+
+[[package]]
 name = "day25_2020"
 version = "0.1.0"
 
