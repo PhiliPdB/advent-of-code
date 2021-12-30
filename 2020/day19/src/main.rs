@@ -24,7 +24,7 @@ impl Rules {
 
         match &self.map[&rule] {
             Rule::Character(c) => {
-                if input.chars().nth(0).unwrap() == *c {
+                if input.chars().next().unwrap() == *c {
                     Some(&input[1..])
                 } else {
                     None
@@ -63,17 +63,17 @@ impl FromStr for Rules {
             let id = id.parse().map_err(|_| "Can't parse id")?;
 
             let rule =
-                if rule.starts_with("\"") {
+                if rule.starts_with('\n') {
                     Rule::Character(rule.chars().nth(1).unwrap())
-                } else if rule.contains("|") {
+                } else if rule.contains('|') {
                     let (rule1, rule2) = rule.split_once(" | ").unwrap();
 
                     Rule::Or(
-                        rule1.split(" ").map(|n| n.parse().unwrap()).collect(),
-                        rule2.split(" ").map(|n| n.parse().unwrap()).collect()
+                        rule1.split(' ').map(|n| n.parse().unwrap()).collect(),
+                        rule2.split(' ').map(|n| n.parse().unwrap()).collect()
                     )
                 } else {
-                    Rule::Single(rule.split(" ").map(|n| n.parse().unwrap()).collect())
+                    Rule::Single(rule.split(' ').map(|n| n.parse().unwrap()).collect())
                 };
 
             map.insert(id, rule);
