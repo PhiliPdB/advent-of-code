@@ -43,9 +43,8 @@ fn main() {
     let wire2_locations = get_wire_positions(&wires[1]);
     let crossings: Vec<_> = wire1_locations.into_iter()
         .filter_map(|(pos, steps)| {
-            wire2_locations.get(&pos).and_then(|s| {
-                Some((pos, steps, *s))
-            })
+            wire2_locations.get(&pos)
+                .map(|s| (pos, steps, *s))
         })
         .collect();
 

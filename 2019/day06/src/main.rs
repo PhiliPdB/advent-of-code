@@ -13,8 +13,7 @@ impl OrbitMap {
     pub fn get_total_orbits(&self) -> u32 {
         let mut orbit_lookup = vec![u32::MAX; self.adjacency_list.len()];
 
-        let mut stack = Vec::new();
-        stack.push(self.com_index);
+        let mut stack = vec![self.com_index];
         orbit_lookup[self.com_index] = 0;
 
         while let Some(current) = stack.pop() {
