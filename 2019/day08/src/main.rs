@@ -17,7 +17,7 @@ fn main() {
         .map(|layer| {
             layer.sort_unstable();
 
-            layer.into_iter().dedup_with_count().collect_vec()
+            layer.iter_mut().dedup_with_count().collect_vec()
         })
         .min_by(|layer1, layer2| {
             let layer1_zeros = (*layer1[0].1 == 0).then(|| layer1[0].0).unwrap_or(usize::MAX);
