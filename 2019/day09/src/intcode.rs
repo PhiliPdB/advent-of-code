@@ -110,9 +110,9 @@ impl Program {
         let instruction = self[ip];
 
         let mut output = [0; N];
-        for i in 0..N {
+        for (i, item) in output.iter_mut().enumerate() {
             let mode = (instruction / 10_i64.pow(i as u32 + 2)) % 10;
-            output[i] = self.get_value(mode, ip + i + 1)
+            *item = self.get_value(mode, ip + i + 1)
         }
 
         output
