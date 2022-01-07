@@ -11,11 +11,13 @@ impl<'a> Chemical<'a> {
         Self { amount, name }
     }
 
-    pub fn from_str(s: &'a str) -> Self {
-        let (amount, name) = s.split_once(' ').unwrap();
-        let amount = amount.parse().unwrap();
+    // Can't implement the trait because of the lifetime requirements
+    #[allow(clippy::should_implement_trait)]
+    pub fn from_str(s: &'a str) -> Result<Self, &'static str> {
+        let (amount, name) = s.split_once(' ').ok_or("Invalid chemical format")?;
+        let amount = amount.parse().map_err(|_| "Can't parse chemical amount")?;
 
-        Self::new(amount, name)
+        Ok(Self::new(amount, name))
     }
 }
 
@@ -52,9 +54,9 @@ fn main() {
         .lines()
         .map(|s| {
             let (ingredients, output) = s.split_once(" => ").unwrap();
-            let output = Chemical::from_str(output);
+            let output = Chemical::from_str(output).unwrap();
             let ingredients: Vec<_> = ingredients.split(", ")
-                .map(|i| Chemical::from_str(i))
+                .map(|i| Chemical::from_str(i).unwrap())
                 .collect();
 
             (output.name, (output, ingredients))
