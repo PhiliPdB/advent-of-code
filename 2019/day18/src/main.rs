@@ -299,7 +299,45 @@ impl<const N: usize> FromStr for Vault<N> {
     }
 }
 
-fn dijkstra<const N: usize>(vault: &Vault<N>) -> u32 {
+fn dijkstra_part1(vault: &Vault<1>) -> u32 {
+    let mut queue = BinaryHeap::new();
+    let mut visited = HashSet::new();
+
+    // Initialize queue
+    queue.push(HeapItem { coords: vault.entrances, keys: BitSet::default(), distance: 0 });
+
+    while let Some(HeapItem { coords: [(x, y)], keys, distance }) = queue.pop() {
+        if !visited.insert(((x, y), keys)) {
+            continue;
+        }
+
+        if keys.set_bits() == vault.total_keys {
+            return distance;
+        }
+
+        for ((mx, my), move_distance) in &vault.adjacency_list[&(x, y)] {
+            let mut new_keys = keys.clone();
+
+            match vault.map[*my][*mx] {
+                Space::Door(k) => {
+                    if !new_keys.get((k.to_ascii_lowercase() as u8 - 97) as u32) {
+                        continue;
+                    }
+                },
+                Space::Key(k) => {
+                    new_keys.set((k as u8 - 97) as u32);
+                },
+                _ => (),
+            }
+
+            queue.push(HeapItem { coords: [(*mx, *my)], keys: new_keys, distance: distance + move_distance });
+        }
+    }
+
+    unreachable!()
+}
+
+fn dijkstra_part2<const N: usize>(vault: &Vault<N>) -> u32 {
     let mut queue = BinaryHeap::new();
     let mut visited = HashSet::new();
 
@@ -334,8 +372,8 @@ fn dijkstra<const N: usize>(vault: &Vault<N>) -> u32 {
 
 fn main() {
     let vault = Vault::<1>::from_str(include_str!("../input.txt")).unwrap();
-    println!("[Part 1] Shortest path: {}", dijkstra(&vault));
+    println!("[Part 1] Shortest path: {}", dijkstra_part1(&vault));
 
     let part2_vault = vault.upgrade();
-    println!("[Part 2] Shortest path: {}", dijkstra(&part2_vault));
+    println!("[Part 2] Shortest path: {}", dijkstra_part2(&part2_vault));
 }
