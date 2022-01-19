@@ -29,14 +29,12 @@ fn main() {
         let o = program.clone().run([current.0, current.1]);
         if o == 0 {
             current.0 += 1;
+        } else if program.clone().run([current.0 + 99, current.1 - 99]) == 1 {
+            // Assume the entire thing fits
+            println!("Answer: {}", current.0 * 10_000 + current.1 - 99);
+            break;
         } else {
-            if program.clone().run([current.0 + 99, current.1 - 99]) == 1 {
-                // Assume the entire thing fits
-                println!("Answer: {}", current.0 * 10_000 + current.1 - 99);
-                break;
-            } else {
-                current.1 += 1;
-            }
+            current.1 += 1;
         }
     }
 }

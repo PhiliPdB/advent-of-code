@@ -25,9 +25,11 @@ impl<const N: usize> Ord for HeapItem<N> {
 
 impl<const N: usize> PartialOrd for HeapItem<N> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(&other))
+        Some(self.cmp(other))
     }
 }
+
+type Coord = (usize, usize);
 
 #[derive(Debug, PartialEq, Eq)]
 struct SmallHeapItem {
@@ -43,7 +45,7 @@ impl Ord for SmallHeapItem {
 
 impl PartialOrd for SmallHeapItem {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(&other))
+        Some(self.cmp(other))
     }
 }
 
@@ -84,9 +86,9 @@ impl Space {
 #[derive(Debug)]
 struct Vault<const N: usize> {
     map: Vec<Vec<Space>>,
-    adjacency_list: HashMap<(usize, usize), Vec<((usize, usize), u32)>>,
-    entrances: [(usize, usize); N],
-    key_locations: Vec<(char, (usize, usize))>,
+    adjacency_list: HashMap<Coord, Vec<(Coord, u32)>>,
+    entrances: [Coord; N],
+    key_locations: Vec<(char, Coord)>,
     total_keys: u32,
 }
 
@@ -126,7 +128,7 @@ impl Vault<1> {
 }
 
 impl<const N: usize> Vault<N> {
-    pub fn key_distances(&self, (x, y): (usize, usize), keys: BitSet) -> Vec<(char, (usize, usize), u32)> {
+    pub fn key_distances(&self, (x, y): Coord, keys: BitSet) -> Vec<(char, Coord, u32)> {
         let mut key_distances = Vec::new();
         for (key, (tx, ty)) in &self.key_locations {
             if keys.get((*key as u8 - 97) as u32) {
@@ -150,7 +152,7 @@ impl<const N: usize> Vault<N> {
         key_distances
     }
 
-    fn dijkstra(&self, (sx, sy): (usize, usize), (tx, ty): (usize, usize), keys: BitSet) -> Option<u32> {
+    fn dijkstra(&self, (sx, sy): Coord, (tx, ty): Coord, keys: BitSet) -> Option<u32> {
         let mut queue = BinaryHeap::new();
         let mut visited = HashSet::new();
 
@@ -182,7 +184,7 @@ impl<const N: usize> Vault<N> {
     }
 
     /// Dfs to explore the map and create the adjacency list.
-    fn dfs(&mut self, (sx, sy): (usize, usize)) {
+    fn dfs(&mut self, (sx, sy): Coord) {
         let mut stack = Vec::new();
         let mut visited = HashSet::new();
 
@@ -201,7 +203,7 @@ impl<const N: usize> Vault<N> {
         }
     }
 
-    fn next_moves(&self, (x, y): (usize, usize)) -> Vec<((usize, usize), u32)> {
+    fn next_moves(&self, (x, y): Coord) -> Vec<(Coord, u32)> {
         let mut next_moves = Vec::with_capacity(4);
 
         for (dx, dy) in [(-1, 0), (0, -1), (1, 0), (0, 1)] {
@@ -237,7 +239,7 @@ impl<const N: usize> Vault<N> {
         next_moves
     }
 
-    fn move_possibilities(&self, (x, y): (usize, usize), (last_x, last_y): (usize, usize)) -> Vec<(usize, usize)> {
+    fn move_possibilities(&self, (x, y): Coord, (last_x, last_y): Coord) -> Vec<Coord> {
         [(-1, 0), (0, -1), (1, 0), (0, 1)].into_iter()
             .filter_map(|(dx, dy)| {
                 let nx = (x as i32 + dx) as usize;
@@ -253,7 +255,7 @@ impl<const N: usize> Vault<N> {
             .collect()
     }
 
-    fn quadrant(&self, (x, y): (usize, usize)) -> u32 {
+    fn quadrant(&self, (x, y): Coord) -> u32 {
         let pos1 = (x <= (self.map[0].len() / 2)) as u32;
         let pos2 = (y <= (self.map.len() / 2)) as u32;
 
@@ -316,7 +318,7 @@ fn dijkstra_part1(vault: &Vault<1>) -> u32 {
         }
 
         for ((mx, my), move_distance) in &vault.adjacency_list[&(x, y)] {
-            let mut new_keys = keys.clone();
+            let mut new_keys = keys;
 
             match vault.map[*my][*mx] {
                 Space::Door(k) => {
@@ -354,10 +356,10 @@ fn dijkstra_part2<const N: usize>(vault: &Vault<N>) -> u32 {
         }
 
         for i in 0..coords.len() {
-            let mut new_coords = coords.clone();
+            let mut new_coords = coords;
 
             for (k, (mx, my), move_distance) in vault.key_distances(coords[i], keys) {
-                let mut new_keys = keys.clone();
+                let mut new_keys = keys;
                 new_keys.set((k as u8 - 97) as u32);
 
                 new_coords[i] = (mx, my);
