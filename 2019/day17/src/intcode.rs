@@ -59,7 +59,7 @@ impl Program {
                         self.row += 1;
                     } else if val1 > 255 {
                         return val1;
-                    }else {
+                    } else {
                         let out_char = unsafe { char::from_u32_unchecked(val1 as u32) };
                         while self.image.len() <= self.row {
                             self.image.push(vec![]);
