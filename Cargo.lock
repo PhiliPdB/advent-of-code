@@ -403,6 +403,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "day22_2019"
+version = "0.1.0"
+dependencies = [
+ "nom",
+ "num",
+]
+
+[[package]]
 name = "day22_2020"
 version = "0.1.0"
 
