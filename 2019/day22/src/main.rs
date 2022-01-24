@@ -108,32 +108,10 @@ fn main() {
 
     // Part 1
 
-    // let mut test_deck = Deck::new(10);
-    // test_deck.apply(Instruction::DealIncrement(7));
-    // test_deck.apply(Instruction::DealIncrement(9));
-    // test_deck.apply(Instruction::Cut(-2));
-    // println!("{:?}", test_deck);
-
-    // let mut deck = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    // Instruction::DealIncrement(7).execute(&mut deck);
-    // println!("{:?}", deck);
-    // Instruction::DealNew.execute(&mut deck);
-    // println!("{:?}", deck);
-
-    // println!();
-
-    // println!("{:?}", 3.extended_gcd(&10));
-    // return;
-
     let mut deck: Vec<_> = (0..10_007_u32).collect();
-    // let mut new_deck = Deck::new(10_007);
     for instruction in &input {
         instruction.execute(&mut deck);
-        // new_deck.apply(*instruction);
     }
-
-    // println!("{:?}", &deck[..10]);
-    // println!("{:?}", new_deck);
 
     let pos = deck.iter().position(|c| *c == 2019).unwrap();
     println!("[Part 1] Position: {}", pos);
