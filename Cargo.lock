@@ -476,6 +476,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "day25_2019"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
 name = "day25_2020"
 version = "0.1.0"
 
