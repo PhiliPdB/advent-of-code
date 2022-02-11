@@ -54,9 +54,9 @@ public:
                 return Coordinate{ location.x, location.y + 1 };
             case Direction::Left:
                 return Coordinate{ location.x - 1, location.y };
-            default:
-                throw std::runtime_error("Unreachable");
         }
+
+        throw std::runtime_error("Unreachable");
     }
 
     constexpr void turn_left() {
