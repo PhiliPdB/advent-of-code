@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <array>
-#include <deque>
 #include <fstream>
 #include <iostream>
 #include <ostream>
