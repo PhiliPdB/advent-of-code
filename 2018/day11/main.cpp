@@ -1,9 +1,9 @@
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <list>
-#include <numeric>
-#include <vector>
 
+constexpr int GRID_SIZE = 300;
 constexpr int GRID_SERIAL_NUMBER = 9995;
 
 constexpr int power_level(const int x, const int y) {
@@ -21,17 +21,17 @@ constexpr int power_level(const int x, const int y) {
     return power_level;
 }
 
-constexpr std::vector<std::vector<int>> build_power_level_lookup() {
-    std::vector lookup(301, std::vector(301, 0));
-    for (int x = 1; x <= 300; ++x) {
-        for (int y = 1; y <= 300; ++y) {
+consteval std::array<std::array<int, GRID_SIZE + 1>, GRID_SIZE + 1> build_power_level_lookup() {
+    std::array<std::array<int, GRID_SIZE + 1>, GRID_SIZE + 1> lookup{};
+    for (int x = 1; x <= GRID_SIZE; ++x) {
+        for (int y = 1; y <= GRID_SIZE; ++y) {
             lookup[x][y] = power_level(x, y);
         }
     }
     return lookup;
 }
 
-static const auto POWER_LEVEL_LOOKUP{ build_power_level_lookup() };
+static constexpr auto POWER_LEVEL_LOOKUP{ build_power_level_lookup() };
 
 
 int main() {
@@ -40,9 +40,9 @@ int main() {
     std::tuple<int, int, int> max_power_coordinate;
     std::pair<int, int> max_power_coordinate_3;
 
-    for (int x = 1; x <= 300; ++x) {
-        for (int y = 1; y <= 300; ++y) {
-            const auto max_size{ 301 - std::max(x, y) };
+    for (int x = 1; x <= GRID_SIZE; ++x) {
+        for (int y = 1; y <= GRID_SIZE; ++y) {
+            const auto max_size{ GRID_SIZE + 1 - std::max(x, y) };
 
             auto power{ 0 };
             for (int size = 1; size < max_size; ++size) {
