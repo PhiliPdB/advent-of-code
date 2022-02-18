@@ -55,8 +55,6 @@ public:
         std::array<std::array<State, Size>, Size> next_map{};
         for (uint32_t y = 0; y < Size; ++y) {
             for (uint32_t x = 0; x < Size; ++x) {
-                // TODO: Decide state of next_map[y][x]
-
                 // Go through the neighbours
                 int open_neighbours{ 0 };
                 int tree_neighbours{ 0 };
