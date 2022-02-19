@@ -1,0 +1,2 @@
+add_executable(day21_2018 main.cpp)
+set_property(TARGET day21_2018 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")

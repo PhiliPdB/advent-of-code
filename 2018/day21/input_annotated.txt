@@ -1,0 +1,47 @@
+#ip: 4
+#registers: [a, b, c, d, e, f]
+
+	seti 123 0 3       # d = 123
+top:
+	bani 3 456 3       # d &= 456
+# Thus, d = 72
+	eqri 3 72 3        # d = (d == 72)
+# d = 1
+	addr 3 4 4         # jmp true || false
+false:
+	seti 0 0 4         # jmp top
+true:
+	seti 0 4 3         # d = 0
+	bori 3 65536 2     # c = d | 65536
+	seti 1099159 8 3   # d = 1099159
+
+	bani 2 255 1       # b = c & 255
+	addr 3 1 3         # d += b
+	bani 3 16777215 3  # d &= 16777215
+	muli 3 65899 3     # d *= 65899
+	bani 3 16777215 3  # d &= 16777215
+	gtir 256 2 1       # b = (256 > c)
+# At this point, b = 0, c = 65536, d = 6237469
+	addr 1 4 4         # jmp gt_true || gt_false
+gt_false:
+	addi 4 1 4         # jmp n
+gt_true:
+	seti 27 6 4        # jmp f
+n:
+	seti 0 8 1         # b = 0
+n2:
+	addi 1 1 5         # f = b + 1
+	muli 5 256 5       # f *= 256
+	gtrr 5 2 5         # f = (f > c)
+	addr 5 4 4         # jmp
+	addi 4 1 4         # jmp
+	seti 25 5 4        # jmp f2
+	addi 1 1 1         # b += 1
+	seti 17 1 4        # jmp n2
+f2:
+	setr 1 2 2         # c = b, c = 256
+	seti 7 0 4
+f:
+	eqrr 3 0 1
+	addr 1 4 4
+	seti 5 0 4
