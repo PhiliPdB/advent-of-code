@@ -33,9 +33,6 @@ public:
           m_weaknesses{std::move(weaknesses)}, m_immunities{std::move(immunities)} {
     }
 
-    Group(const Group& group) = default;
-
-
     [[nodiscard]]
     constexpr int units() const {
         return m_units;
@@ -67,9 +64,15 @@ public:
         }
     }
 
-    void attack(const int power, const std::string& attack) {
-        m_units -= damage_taken(power, attack) / m_hit_points;
-        m_units = std::max(m_units, 0);
+    int attack(const int power, const std::string& attack) {
+        const int units_killed{ std::min(damage_taken(power, attack) / m_hit_points, m_units) };
+
+        m_units -= units_killed;
+        return units_killed;
+    }
+
+    void boost(const int boost) {
+        m_attack_damage += boost;
     }
 
     auto operator<=>(const Group& group) const {
@@ -83,6 +86,10 @@ public:
     }
 };
 
+struct BattleResult {
+    bool immune_system_win;
+    int units_left;
+};
 
 std::unordered_set<std::string> get_words(std::string line) {
     std::unordered_set<std::string> set{};
@@ -156,6 +163,93 @@ void remove_dead_groups(std::vector<Group>& groups) {
     }
 }
 
+BattleResult fight(std::vector<Group> immune_system, std::vector<Group> infection) {
+    int units_killed{ -1 };
+    while (!immune_system.empty() && !infection.empty() && units_killed != 0) {
+        // FIGHT!
+        units_killed = 0;
+
+        // Run target selection
+        std::vector immune_targets{ targets(immune_system, infection) };
+        std::vector infection_targets{ targets(infection, immune_system) };
+
+        // Let them attack
+        std::vector<std::pair<size_t, const Group*>> immune_order;
+        immune_order.reserve(immune_system.size());
+        for (const auto& group : immune_system) {
+            immune_order.emplace_back(immune_order.size(), &group);
+        }
+        std::ranges::sort(immune_order, std::ranges::greater{}, [](const auto& e) { return e.second->initiative(); });
+
+        std::vector<std::pair<size_t, const Group*>> infection_order;
+        infection_order.reserve(infection.size());
+        for (const auto& group : infection) {
+            infection_order.emplace_back(infection_order.size(), &group);
+        }
+        std::ranges::sort(infection_order, std::ranges::greater{}, [](const auto& e) { return e.second->initiative(); });
+
+        size_t immune_index{ 0 };
+        size_t infection_index{ 0 };
+        while (immune_index < immune_order.size() || infection_index < infection_order.size()) {
+            const auto immune_initiative{
+                immune_index < immune_order.size()
+                    ? immune_order[immune_index].second->initiative()
+                    : -1
+            };
+            const auto infection_initiative{
+                infection_index < infection_order.size()
+                    ? infection_order[infection_index].second->initiative()
+                    : -1
+            };
+
+            if (immune_initiative > infection_initiative) {
+                if (const auto target{ immune_targets[immune_order[immune_index].first] }; target.has_value()) {
+                    units_killed += infection[*target].attack(
+                        immune_order[immune_index].second->effective_power(),
+                        immune_order[immune_index].second->attack_type()
+                    );
+                }
+                ++immune_index;
+            }
+            else {
+                if (const auto target{ infection_targets[infection_order[infection_index].first] }; target.has_value()) {
+                    units_killed += immune_system[*target].attack(
+                        infection_order[infection_index].second->effective_power(),
+                        infection_order[infection_index].second->attack_type()
+                    );
+                }
+                ++infection_index;
+            }
+        }
+
+        // Remove dead groups
+        remove_dead_groups(immune_system);
+        remove_dead_groups(infection);
+    }
+
+    int winning_army_units;
+    if (!immune_system.empty()) {
+        winning_army_units = std::transform_reduce(
+            std::execution::par_unseq,
+            immune_system.begin(), immune_system.end(),
+            0,
+            std::plus(),
+            [](const auto& e) { return e.units(); }
+        );
+    }
+    else {
+        winning_army_units = std::transform_reduce(
+            std::execution::par_unseq,
+            infection.begin(), infection.end(),
+            0,
+            std::plus(),
+            [](const auto& e) { return e.units(); }
+        );
+    }
+
+    return { infection.empty(), winning_army_units };
+}
+
 
 int main() {
     // Read input
@@ -225,88 +319,33 @@ int main() {
 
 
     // Part 1
-    while (!immune_system.empty() && !infection.empty()) {
-        // FIGHT!
+    int winning_army_units{ fight(immune_system, infection).units_left };
+    std::cout << "[Part 1] Winning army units: " << winning_army_units << '\n';
 
-        // Run target selection
-        std::vector immune_targets{ targets(immune_system, infection) };
-        std::vector infection_targets{ targets(infection, immune_system) };
+    // Part 2
+    int min_boost{ 0 };
+    int max_boost{ 1'000 };
+    while (min_boost < max_boost) {
+        const int boost{ (min_boost + max_boost) / 2 };
 
-        // Let them attack
-        std::vector<std::pair<size_t, const Group*>> immune_order;
-        immune_order.reserve(immune_system.size());
-        for (const auto& group : immune_system) {
-            immune_order.emplace_back(immune_order.size(), &group);
-        }
-        std::ranges::sort(immune_order, std::ranges::greater{}, [](const auto& e) { return e.second->initiative(); });
-
-        std::vector<std::pair<size_t, const Group*>> infection_order;
-        infection_order.reserve(infection.size());
-        for (const auto& group : infection) {
-            infection_order.emplace_back(infection_order.size(), &group);
-        }
-        std::ranges::sort(infection_order, std::ranges::greater{}, [](const auto& e) { return e.second->initiative(); });
-
-        size_t immune_index{ 0 };
-        size_t infection_index{ 0 };
-        while (immune_index < immune_order.size() || infection_index < infection_order.size()) {
-            const auto immune_initiative{
-                immune_index < immune_order.size()
-                    ? immune_order[immune_index].second->initiative()
-                    : -1
-            };
-            const auto infection_initiative{
-                infection_index < infection_order.size()
-                    ? infection_order[infection_index].second->initiative()
-                    : -1
-            };
-
-            if (immune_initiative > infection_initiative) {
-                if (const auto target{ immune_targets[immune_order[immune_index].first] }; target.has_value()) {
-                    infection[*target].attack(
-                        immune_order[immune_index].second->effective_power(),
-                        immune_order[immune_index].second->attack_type()
-                    );
-                }
-                ++immune_index;
-            } else {
-                if (const auto target{ infection_targets[infection_order[infection_index].first] }; target.has_value()) {
-                    immune_system[*target].attack(
-                        infection_order[infection_index].second->effective_power(),
-                        infection_order[infection_index].second->attack_type()
-                    );
-                }
-                ++infection_index;
-            }
+        auto boosted_immune_system{ immune_system };
+        for (auto& group : boosted_immune_system) {
+            group.boost(boost);
         }
 
-        // Remove dead groups
-        remove_dead_groups(immune_system);
-        remove_dead_groups(infection);
+        if (const auto [immune_system_win, units_left]{ fight(boosted_immune_system, infection) }; immune_system_win) {
+            max_boost = boost;
+        } else {
+            min_boost = boost + 1;
+        }
     }
 
-    int winning_army_units;
-    if (!immune_system.empty()) {
-        winning_army_units = std::transform_reduce(
-            std::execution::par_unseq,
-            immune_system.begin(), immune_system.end(), 
-            0,
-            std::plus(),
-            [](const auto& e) { return e.units(); }
-        );
-    } else {
-        winning_army_units = std::transform_reduce(
-            std::execution::par_unseq,
-            infection.begin(), infection.end(),
-            0,
-            std::plus(),
-            [](const auto& e) { return e.units(); }
-        );
+    // Rerun at minimal boost
+    for (auto& group : immune_system) {
+        group.boost(min_boost);
     }
-    std::cout << "Winning army units: " << winning_army_units << '\n';
+    int units_left{ fight(immune_system, infection).units_left };
+    std::cout << "[Part 2] Winning army units: " << units_left << '\n';
 
     return EXIT_SUCCESS;
 }
-
-// Too High: 22680
-// Too Low: 20622
