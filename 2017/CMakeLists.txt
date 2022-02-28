@@ -1,0 +1,12 @@
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+foreach (DAY IN ITEMS "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23" "24" "25")
+    set(puzzle_dir "day${DAY}")
+    set(abs_puzzle_dir "${CMAKE_CURRENT_SOURCE_DIR}/${puzzle_dir}")
+    set(puzzle_name "${puzzle_dir}_2017")
+    if (IS_DIRECTORY "${abs_puzzle_dir}")
+        message(STATUS "Adding: 2017/${puzzle_dir}")
+        add_subdirectory("${puzzle_dir}")
+    endif()
+endforeach()

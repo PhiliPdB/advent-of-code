@@ -9,4 +9,5 @@ else()
     add_compile_options( -Wall -Werror -Wconversion )
 endif()
 
+add_subdirectory("2017")
 add_subdirectory("2018")
