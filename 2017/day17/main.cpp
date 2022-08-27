@@ -10,7 +10,9 @@ int spinlock(const int steps_per_insert, const int rounds) {
     for (int i = 1; i <= rounds; ++i) {
         // Step forward
         current_position += steps_per_insert;
-        current_position %= static_cast<int>(circular_buffer.size());
+        while (current_position >= static_cast<int>(circular_buffer.size())) {
+            current_position -= static_cast<int>(circular_buffer.size());
+        }
 
         // Insert the item
         // Note: `i` is the next value
@@ -32,7 +34,9 @@ int angry_spinlock(const int steps_per_insert, const int rounds) {
     for (int i = 1; i <= rounds; ++i) {
         // Step forward
         current_position += steps_per_insert;
-        current_position %= buffer_size;
+        while (current_position >= buffer_size) {
+            current_position -= buffer_size;
+        }
 
         // Insert the item, but we only care about which item if it is inserted after 0.
         ++buffer_size;
@@ -49,6 +53,6 @@ int angry_spinlock(const int steps_per_insert, const int rounds) {
 
 int main() {
     std::cout << "[Part 1] Value after 2017: " << spinlock(369, 2017) << '\n';
-    std::cout << "[Part 1] Value after 2017: " << angry_spinlock(369, 50'000'000) << '\n';
+    std::cout << "[Part 2] Value after 2017: " << angry_spinlock(369, 50'000'000) << '\n';
     return EXIT_SUCCESS;
 }
