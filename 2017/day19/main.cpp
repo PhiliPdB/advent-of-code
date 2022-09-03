@@ -1,11 +1,7 @@
-#include <algorithm>
-#include <deque>
 #include <fstream>
 #include <iostream>
-#include <ostream>
 #include <regex>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 enum class Direction {
