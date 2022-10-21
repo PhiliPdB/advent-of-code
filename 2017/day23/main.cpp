@@ -1,8 +1,6 @@
 #include <algorithm>
-#include <deque>
 #include <fstream>
 #include <iostream>
-#include <ostream>
 #include <regex>
 #include <string>
 #include <unordered_map>
@@ -97,7 +95,7 @@ public:
 };
 
 
-bool is_prime(std::int64_t n) {
+bool is_prime(const std::int64_t n) {
     if (n % 2 == 0) {
         return false;
     }
@@ -171,7 +169,7 @@ int main() {
     // Part 2
     // Using hand decompiled code (also see other input file)
     std::int64_t b{ static_cast<std::int64_t>(99) * 100 + 100'000 };
-    std::int64_t c{ b + 17'000 };
+    const std::int64_t c{ b + 17'000 };
     std::int64_t h{ 0 };
 
     while (b <= c) {
