@@ -1,0 +1,33 @@
+if (a != 0) {
+	b = 99 * 100 + 100_000
+	c = b + 17_000
+} else {
+	b = 99
+	c = 99
+}
+
+loop {
+	f = 1
+	d = 2
+	do {
+		e = 2
+		do {
+			g = d * e - b
+			if (g == 0) {
+				f = 0
+			}
+			e += 1
+		} while (e != b)
+		d += 1
+	} while (d != b)
+
+	// NOTE: f == 0 <=> b is not prime
+	if (f == 0) {
+		h += 1
+	}
+
+	if (b == c) {
+		break
+	}
+	b += 17
+}
