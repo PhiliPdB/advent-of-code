@@ -2,11 +2,9 @@
 #include <array>
 #include <fstream>
 #include <iostream>
-#include <regex>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <format>
 
 template<const int N>
 int pattern_to_int(std::array<std::string, N> pattern) {
