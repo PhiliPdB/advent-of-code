@@ -1,8 +1,8 @@
 ﻿
 State initialState = new(new List<Item>[] {
-    new List<Item>{ new(Type.Generator, "strontium"), new(Type.Chip, "strontium"), new(Type.Generator, "plutonium"), new(Type.Chip, "plutonium") },
-    new List<Item>{ new(Type.Generator, "thulium"), new(Type.Generator, "ruthenium"), new(Type.Chip, "ruthenium"), new(Type.Generator, "curium"), new(Type.Chip, "curium") },
-    new List<Item>{ new(Type.Chip, "thulium") },
+    new List<Item>{ new(Type.Generator, Rock.Strontium), new(Type.Chip, Rock.Strontium), new(Type.Generator, Rock.Plutionium), new(Type.Chip, Rock.Plutionium) },
+    new List<Item>{ new(Type.Generator, Rock.Thulium), new(Type.Generator, Rock.Ruthenium), new(Type.Chip, Rock.Ruthenium), new(Type.Generator, Rock.Curium), new(Type.Chip, Rock.Curium) },
+    new List<Item>{ new(Type.Chip, Rock.Thulium) },
     new List<Item>{ },
 });
 initialState.SortAll();
@@ -40,10 +40,10 @@ static int MinimumElevatorMoves(State initialState) {
 
 Console.WriteLine($"[Part 1] It took {MinimumElevatorMoves(initialState)} moves to bring everything to the fourth floor.");
 
-initialState.floor[0].Add(new Item(Type.Generator, "elerium"));
-initialState.floor[0].Add(new Item(Type.Chip, "elerium"));
-initialState.floor[0].Add(new Item(Type.Generator, "dilithium"));
-initialState.floor[0].Add(new Item(Type.Chip, "dilithium"));
+initialState.floor[0].Add(new Item(Type.Generator, Rock.Elerium));
+initialState.floor[0].Add(new Item(Type.Chip, Rock.Elerium));
+initialState.floor[0].Add(new Item(Type.Generator, Rock.Dilithium));
+initialState.floor[0].Add(new Item(Type.Chip, Rock.Dilithium));
 initialState.SortFloor(0);
 Console.WriteLine($"[Part 2] It took {MinimumElevatorMoves(initialState)} moves to bring everything to the fourth floor.");
 
@@ -53,17 +53,27 @@ internal enum Type {
     Chip, Generator
 }
 
+internal enum Rock {
+    Curium,
+    Elerium,
+    Dilithium,
+    Plutionium,
+    Ruthenium,
+    Strontium,
+    Thulium,
+}
+
 internal struct Item: IEquatable<Item>, IComparable<Item> {
     public Type type;
-    public string item;
+    public Rock rock;
 
-    public Item(Type type, string item) {
+    public Item(Type type, Rock rock) {
         this.type = type;
-        this.item = item;
+        this.rock = rock;
     }
 
     public bool Equals(Item other) {
-        return this.type == other.type && this.item == other.item;
+        return this.type == other.type && this.rock == other.rock;
     }
 
     public override bool Equals(object? obj) {
@@ -71,14 +81,14 @@ internal struct Item: IEquatable<Item>, IComparable<Item> {
     }
 
     public override int GetHashCode() {
-        return HashCode.Combine((int) this.type, this.item);
+        return HashCode.Combine((int) this.type, this.rock);
     }
 
     public int CompareTo(Item other) {
         int typeComparison = this.type.CompareTo(other.type);
         if (typeComparison != 0) return typeComparison;
         
-        return string.Compare(this.item, other.item, StringComparison.Ordinal);
+        return this.rock.CompareTo(other.rock);
     }
 }
 
@@ -104,7 +114,7 @@ internal class State: ICloneable, IEquatable<State> {
             }
             
             // Find corresponding rtg
-            int correspondingRtg = this.floor[floor].FindIndex(i => i.type == Type.Generator && i.item == item.item);
+            int correspondingRtg = this.floor[floor].FindIndex(i => i.type == Type.Generator && i.rock == item.rock);
             if (correspondingRtg == -1) {
                 return false;
             }
@@ -113,7 +123,7 @@ internal class State: ICloneable, IEquatable<State> {
         return true;
     }
 
-    // TODO: Generate next states
+    // Generate next states
     // - Take any two items on current floor
     // - Check if current floor left compatible
     // - Check if items chosen compatible
