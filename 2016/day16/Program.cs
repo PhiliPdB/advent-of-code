@@ -24,20 +24,26 @@ static string ExpandTo(string initialState, int diskSize) {
 }
 
 static string GetChecksum(string data) {
-    while (data.Length % 2 == 0) {
-        var sb = new StringBuilder(data.Length / 2);
-        for (var i = 0; i < data.Length; i += 2) {
-            if (data[i] == data[i + 1]) {
-                sb.Append('1');
-            } else {
-                sb.Append('0');
+    // Largest power of 2 that is smaller than the data length
+    int blockSize = data.Length & ~(data.Length - 1);
+
+    var sb = new StringBuilder(data.Length / blockSize);
+    for (var i = 0; i < data.Length; i += blockSize) {
+        var ones = 0;
+        foreach (char c in data[i..(i + blockSize)]) {
+            if (c == '1') {
+                ones++;
             }
         }
 
-        data = sb.ToString();
+        if (ones % 2 == 0) {
+            sb.Append('1');
+        } else {
+            sb.Append('0');
+        }
     }
-
-    return data;
+    
+    return sb.ToString();
 }
 
 const string initialState = "01000100010010111";
