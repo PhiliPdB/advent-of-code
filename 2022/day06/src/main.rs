@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 fn main() {
     let input: Vec<_> = include_str!("../input.txt").chars().collect();
 
@@ -10,10 +8,19 @@ fn main() {
         }
     }
 
-    for (i, w) in input.windows(14).enumerate() {
-        if HashSet::<char>::from_iter(w.iter().cloned()).len() == 14 {
-            println!("[Part 2] Processed {} characters", i + 14);
-            break;
+    'outer: for (i, w) in input.windows(14).enumerate() {
+        let mut seen: u32 = 0;
+        for c in w {
+            let c = *c as u32;
+
+            if (seen >> c) & 1 == 1 {
+                continue 'outer;
+            } else {
+                seen |= 1 << c;
+            }
         }
+
+        println!("[Part 2] Processed {} characters", i + 14);
+        break;
     }
 }
