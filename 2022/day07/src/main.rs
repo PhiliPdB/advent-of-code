@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, hash_map::Entry};
 
 fn main() {
     let input: Vec<_> = include_str!("../input.txt")
@@ -34,11 +34,14 @@ fn main() {
         let splitted: Vec<_> = k.split('/').collect();
         for i in 0..=splitted.len() {
             let key = splitted[0..i].join("/");
-            if !folder_sizes.contains_key(&key) {
-                folder_sizes.insert(key, size);
-            } else {
-                *folder_sizes.get_mut(&key).unwrap() += size;
-            }
+            match folder_sizes.entry(key) {
+                Entry::Occupied(mut e) => {
+                    *e.get_mut() += size;
+                },
+                Entry::Vacant(e) => {
+                    e.insert(size);
+                },
+            };
         }
     }
 
