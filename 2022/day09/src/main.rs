@@ -39,43 +39,28 @@ impl Move {
     }
 }
 
+#[inline]
 fn update_knot(head: Coord, knot: &mut Coord) {
     if head.x - knot.x >= 2 {
         knot.x += 1;
         debug_assert_eq!(head.x, knot.x + 1);
 
-        if head.y - knot.y >= 1 {
-            knot.y += 1;
-        } else if knot.y - head.y >= 1 {
-            knot.y -= 1;
-        }
+        knot.y += (head.y - knot.y).signum();
     } else if knot.x - head.x >= 2 {
         knot.x -= 1;
         debug_assert_eq!(head.x, knot.x - 1);
 
-        if head.y - knot.y >= 1 {
-            knot.y += 1;
-        } else if knot.y - head.y >= 1 {
-            knot.y -= 1;
-        }
+        knot.y += (head.y - knot.y).signum();
     } else if head.y - knot.y >= 2 {
         knot.y += 1;
         debug_assert_eq!(head.y, knot.y + 1);
 
-        if head.x - knot.x >= 1 {
-            knot.x += 1;
-        } else if knot.x - head.x >= 1 {
-            knot.x -= 1;
-        }
+        knot.x += (head.x - knot.x).signum();
     } else if knot.y - head.y >= 2 {
         knot.y -= 1;
         debug_assert_eq!(head.y, knot.y - 1);
 
-        if head.x - knot.x >= 1 {
-            knot.x += 1;
-        } else if knot.x - head.x >= 1 {
-            knot.x -= 1;
-        }
+        knot.x += (head.x - knot.x).signum();
     }
 }
 
