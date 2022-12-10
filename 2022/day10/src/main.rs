@@ -22,7 +22,7 @@ impl Instruction {
 }
 
 fn draw(cycle: i32, sprite_loc: i32, amount: i32) {
-    if cycle % 40 == 0 && cycle != 1 {
+    if cycle % 40 == 0 && cycle != 0 {
         println!();
     }
 
@@ -77,7 +77,7 @@ fn main() {
     }
     println!("[Part 1] Sum: {sum}");
 
-    println!("\nPart 2:");
+    println!("Part 2:");
     x = 1;
     cycle = 0;
     for instruction in &instructions {
