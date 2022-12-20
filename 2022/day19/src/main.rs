@@ -1,33 +1,17 @@
-use std::cmp::Ordering;
 use std::collections::{HashSet, VecDeque};
 
 #[macro_use] extern crate scan_fmt;
 
 #[derive(Debug, PartialEq, Eq)]
-struct HeapItem {
+struct QueueItem {
     resources: (u32, u32, u32, u32),
     robots: (u32, u32, u32, u32),
     time: u32,
 }
 
-impl HeapItem {
+impl QueueItem {
     fn new(resources: (u32, u32, u32, u32), robots: (u32, u32, u32, u32), time: u32) -> Self {
         Self { resources, robots, time }
-    }
-}
-
-impl Ord for HeapItem {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.robots.3.cmp(&other.robots.3)
-            .then(self.robots.2.cmp(&other.robots.2))
-            .then(self.robots.1.cmp(&other.robots.1))
-            .then(self.robots.0.cmp(&other.robots.0))
-    }
-}
-
-impl PartialOrd for HeapItem {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
     }
 }
 
@@ -50,14 +34,14 @@ impl Blueprint {
         let mut max = 0;
 
         let mut queue = VecDeque::new();
-        queue.push_back(HeapItem::new((0, 0, 0, 0), (1, 0, 0, 0), 0));
+        queue.push_back(QueueItem::new((0, 0, 0, 0), (1, 0, 0, 0), 0));
 
         let mut visited = HashSet::new();
 
         let mut max_geodes = vec![0; max_time as usize];
         let mut max_geode_robots = vec![0; max_time as usize];
 
-        while let Some(HeapItem { robots, resources, time }) = queue.pop_front() {
+        while let Some(QueueItem { robots, resources, time }) = queue.pop_front() {
             if time >= max_time {
                 // println!("{time} {robots:?} {resources:?}");
                 if resources.3 > max {
@@ -94,11 +78,11 @@ impl Blueprint {
                 resources.2 + robots.2,
                 resources.3 + robots.3,
             );
-            queue.push_back(HeapItem::new(new_resources, robots, time + 1));
+            queue.push_back(QueueItem::new(new_resources, robots, time + 1));
 
             // Check if we can make new robots
             if resources.0 >= self.ore_robot_cost {
-                queue.push_back(HeapItem::new(
+                queue.push_back(QueueItem::new(
                     (new_resources.0 - self.ore_robot_cost, new_resources.1, new_resources.2, new_resources.3),
                     (robots.0 + 1, robots.1, robots.2, robots.3),
                     time + 1,
@@ -106,7 +90,7 @@ impl Blueprint {
             }
 
             if resources.0 >= self.clay_robot_cost {
-                queue.push_back(HeapItem::new(
+                queue.push_back(QueueItem::new(
                     (new_resources.0 - self.clay_robot_cost, new_resources.1, new_resources.2, new_resources.3),
                     (robots.0, robots.1 + 1, robots.2, robots.3),
                     time + 1,
@@ -114,7 +98,7 @@ impl Blueprint {
             }
 
             if resources.0 >= self.obsidian_robot_cost.0 && resources.1 >= self.obsidian_robot_cost.1 {
-                queue.push_back(HeapItem::new(
+                queue.push_back(QueueItem::new(
                     (new_resources.0 - self.obsidian_robot_cost.0, new_resources.1 - self.obsidian_robot_cost.1, new_resources.2, new_resources.3),
                     (robots.0, robots.1, robots.2 + 1, robots.3),
                     time + 1,
@@ -122,7 +106,7 @@ impl Blueprint {
             }
 
             if resources.0 >= self.geode_robot_cost.0 && resources.2 >= self.geode_robot_cost.1 {
-                queue.push_back(HeapItem::new(
+                queue.push_back(QueueItem::new(
                     (new_resources.0 - self.geode_robot_cost.0, new_resources.1, new_resources.2 - self.geode_robot_cost.1, new_resources.3),
                     (robots.0, robots.1, robots.2, robots.3 + 1),
                     time + 1,
