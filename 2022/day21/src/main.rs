@@ -9,7 +9,7 @@ enum Operator {
 #[derive(Debug, Clone)]
 enum Job {
     Operation(String, Operator, String),
-    Number(i128),
+    Number(i64),
 }
 
 impl Job {
@@ -21,7 +21,7 @@ impl Job {
     }
 }
 
-fn monkey_value(monkey: &str, monkeys: &HashMap<String, Job>, memory: &mut HashMap<String, i128>) -> i128 {
+fn monkey_value(monkey: &str, monkeys: &HashMap<String, Job>, memory: &mut HashMap<String, i64>) -> i64 {
     if let Entry::Occupied(e) = memory.entry(monkey.to_owned()) {
         return *e.get();
     }
@@ -61,7 +61,7 @@ fn has_human(monkey: &str, monkeys: &HashMap<String, Job>) -> bool {
     }
 }
 
-fn require_value(monkeys: &HashMap<String, Job>, memory: &HashMap<String, i128>) -> i128 {
+fn require_value(monkeys: &HashMap<String, Job>, memory: &HashMap<String, i64>) -> i64 {
     let (m1, m2) = monkeys["root"].get_parts();
     let (mut current, mut goal) =
         if has_human(m1, &monkeys) {
