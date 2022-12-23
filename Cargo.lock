@@ -569,6 +569,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "day23_2022"
+version = "0.1.0"
+
+[[package]]
 name = "day24_2019"
 version = "0.1.0"
 
