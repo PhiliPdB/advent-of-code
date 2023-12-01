@@ -15,13 +15,16 @@ fn main() {
     println!("[Part 1] Sum of calibration: {part1_calibration}");
 
 
-    let matches = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    let matches = [
+        ("one", '1'), ("two", '2'), ("three", '3'), ("four", '4'),
+        ("five", '5'), ("six", '6'), ("seven", '7'), ("eight", '8'), ("nine", '9')
+    ];
     let part2_calibration: u32 = input.iter()
         .map(|s| {
             let mut occurrences: Vec<_> = matches
-                .iter().enumerate()
-                .flat_map(|(i, m)| {
-                    s.match_indices(m).map(|x| (x.0, x.1, i+1)).collect::<Vec<_>>()
+                .iter()
+                .flat_map(|m| {
+                    s.match_indices(m.0).map(|x| (x.0, m.1)).collect::<Vec<_>>()
                 })
                 .collect();
             occurrences.sort_unstable_by(|a, b| a.0.cmp(&b.0));
@@ -31,8 +34,8 @@ fn main() {
                 let first_match = occurrences[0];
                 let last_match = occurrences[occurrences.len() - 1];
 
-                chars[first_match.0] = first_match.2.to_string().chars().next().unwrap();
-                chars[last_match.0] = last_match.2.to_string().chars().next().unwrap();
+                chars[first_match.0] = first_match.1;
+                chars[last_match.0] = last_match.1;
             }
 
             let chars: Vec<_> = chars.into_iter()
