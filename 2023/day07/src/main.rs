@@ -51,8 +51,7 @@ impl HandType {
             *count.entry(*card).or_default() += 1;
         }
 
-        let jokers = *count.entry(Card::Joker).or_default();
-        count.remove(&Card::Joker);
+        let jokers = count.remove(&Card::Joker).unwrap_or(0);
 
         let mut count: Vec<_> = count.iter()
             .map(|(_, v)| *v)
@@ -67,11 +66,11 @@ impl HandType {
             Self::FiveOfAKind
         } else if count[0] + jokers == 4 {
             Self::FourOfAKind
-        } else if count[0] + jokers >= 3 && count.len() > 1 && count[1] + (count[0] + jokers - 3) == 2 {
+        } else if count[0] + jokers == 3 && count[1] == 2 {
             Self::FullHouse
         } else if count[0] + jokers == 3 {
             Self::ThreeOfAKind
-        } else if count[0] + jokers >= 2 && count.len() > 1 && count[1] + (count[0] + jokers - 2) == 2 {
+        } else if count[0] + jokers == 2 && count[1] == 2 {
             Self::TwoPair
         } else if count[0] + jokers == 2 {
             Self::OnePair
@@ -86,6 +85,28 @@ struct Hand {
     cards: [Card; 5],
     bid: u32,
     hand_type: HandType,
+}
+
+impl Hand {
+    fn new(cards: [Card; 5], bid: u32) -> Self {
+        let hand_type = HandType::from_cards(&cards);
+
+        Self { cards, bid, hand_type }
+    }
+
+    fn from_str(s: &str, with_jokers: bool) -> Result<Self, &'static str> {
+        let [cards, bid] = s.split(" ").collect::<Vec<_>>().try_into()
+            .map_err(|_| "Invalid format")?;
+
+        let cards = cards.chars()
+            .map(|c| Card::from_char(c, with_jokers))
+            .collect::<Vec<_>>()
+            .try_into()
+            .map_err(|_| "Error parsing cards")?;
+        let bid = bid.parse().map_err(|_| "Bid is not a number")?;
+
+        Ok(Self::new(cards, bid))
+    }
 }
 
 impl Ord for Hand {
@@ -108,24 +129,6 @@ impl PartialOrd for Hand {
 impl PartialEq for Hand {
     fn eq(&self, other: &Self) -> bool {
         self.cards == other.cards && self.hand_type == other.hand_type
-    }
-}
-
-impl Hand {
-    fn from_str(s: &str, with_jokers: bool) -> Result<Self, &'static str> {
-        let [cards, bid] = s.split(" ").collect::<Vec<_>>().try_into()
-            .map_err(|_| "Invalid format")?;
-
-        let cards = cards.chars()
-            .map(|c| Card::from_char(c, with_jokers))
-            .collect::<Vec<_>>()
-            .try_into()
-            .map_err(|_| "Error parsing cards")?;
-        let bid = bid.parse().map_err(|_| "Bid is not a number")?;
-
-        let hand_type = HandType::from_cards(&cards);
-
-        Ok(Self { cards, bid, hand_type })
     }
 }
 
