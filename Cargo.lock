@@ -319,6 +319,13 @@ name = "day08_2022"
 version = "0.1.0"
 
 [[package]]
+name = "day08_2023"
+version = "0.1.0"
+dependencies = [
+ "num",
+]
+
+[[package]]
 name = "day09_2019"
 version = "0.1.0"
 
