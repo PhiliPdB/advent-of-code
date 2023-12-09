@@ -49,11 +49,9 @@ impl Map {
     }
 
     fn ghost_steps(&self) -> u64 {
-        let mut steps = 0;
-
         let mut current_nodes: Vec<_> = self.node_lookup.iter()
             .filter_map(|(k, v)| {
-                if k.ends_with("A") {
+                if k.ends_with('A') {
                     Some(*v)
                 } else {
                     None
@@ -62,7 +60,7 @@ impl Map {
             .collect();
         let goals: HashSet<_> = self.node_lookup.iter()
             .filter_map(|(k, v)| {
-                if k.ends_with("Z") {
+                if k.ends_with('Z') {
                     Some(*v)
                 } else {
                     None
@@ -71,11 +69,11 @@ impl Map {
             .collect();
         let mut frequencies = Vec::new();
 
-        for instruction in self.instructions.iter().cycle() {
+        for (steps, instruction) in self.instructions.iter().cycle().enumerate() {
             let old_length = current_nodes.len();
             current_nodes.retain(|c| !goals.contains(c));
             if current_nodes.len() != old_length {
-                frequencies.push(steps);
+                frequencies.push(steps as u64);
             }
 
             if current_nodes.is_empty() {
@@ -88,8 +86,6 @@ impl Map {
                     Instruction::Right => *c = self.nodes[*c as usize].1,
                 }
             }
-
-            steps += 1;
         }
 
         let mut total_steps = 1;

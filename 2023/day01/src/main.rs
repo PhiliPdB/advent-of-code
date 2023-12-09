@@ -30,7 +30,7 @@ fn main() {
             occurrences.sort_unstable_by(|a, b| a.0.cmp(&b.0));
 
             let mut chars: Vec<_> = s.chars().collect();
-            if occurrences.len() > 0 {
+            if !occurrences.is_empty() {
                 let first_match = occurrences[0];
                 let last_match = occurrences[occurrences.len() - 1];
 

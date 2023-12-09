@@ -76,8 +76,7 @@ fn main() {
             let max_green = g.subsets.iter().map(|c| c.green).max().unwrap();
             let max_blue = g.subsets.iter().map(|c| c.blue).max().unwrap();
 
-            let power = max_red * max_green * max_blue;
-            power
+            max_red * max_green * max_blue
         })
         .sum();
     println!("[Part 2] Sum of powers: {power_sum}");

@@ -64,7 +64,7 @@ fn has_human(monkey: &str, monkeys: &HashMap<String, Job>) -> bool {
 fn require_value(monkeys: &HashMap<String, Job>, memory: &HashMap<String, i64>) -> i64 {
     let (m1, m2) = monkeys["root"].get_parts();
     let (mut current, mut goal) =
-        if has_human(m1, &monkeys) {
+        if has_human(m1, monkeys) {
             (m1, memory[m2])
         } else {
             (m2, memory[m1])

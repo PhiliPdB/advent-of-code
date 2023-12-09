@@ -76,7 +76,7 @@ fn main() {
             }
         }
 
-        if proposals.len() == 0 {
+        if proposals.is_empty() {
             println!("[Part 2] No movement in round: {}", round + 1);
             break;
         }
