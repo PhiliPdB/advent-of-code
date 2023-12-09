@@ -39,8 +39,8 @@ fn has_blizzard(
     }
 
     lefts[y as usize][(x as usize + t as usize) % width as usize]
-        || rights[y as usize][(x - t as i32).rem_euclid(width as i32) as usize]
-        || downs[x as usize][(y - t as i32).rem_euclid(height as i32) as usize]
+        || rights[y as usize][(x - t as i32).rem_euclid(width) as usize]
+        || downs[x as usize][(y - t as i32).rem_euclid(height) as usize]
         || ups[x as usize][(y as usize + t as usize) % height as usize]
 }
 

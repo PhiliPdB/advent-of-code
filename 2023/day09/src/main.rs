@@ -45,7 +45,7 @@ fn main() {
                 .collect::<Vec<_>>()
         });
     let predictions: Vec<_> = histories
-        .map(|h| predict(h))
+        .map(predict)
         .collect();
 
 

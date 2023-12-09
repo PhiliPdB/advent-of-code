@@ -147,7 +147,7 @@ fn tower_size<const N: usize>(input: Vec<Direction>) -> usize {
 
             // Check if we can move down
             for (i, r) in rock.iter().enumerate() {
-                if height + i - 1 >= grid.len() {
+                if height + i > grid.len() {
                     break;
                 }
 
@@ -219,7 +219,7 @@ fn tower_size<const N: usize>(input: Vec<Direction>) -> usize {
 fn main() {
     let input: Vec<_> = include_str!("../input.txt")
         .chars()
-        .map(|c| Direction::from_char(c))
+        .map(Direction::from_char)
         .collect();
 
     println!("[Part 1] Height: {}", tower_size::<2022>(input.clone()));

@@ -42,10 +42,10 @@ impl FromStr for ScratchCard {
 
         let [winning, selected] = numbers.split(" | ").collect::<Vec<_>>().try_into()
             .map_err(|_| "Unable to parse numbers")?;
-        let winning: HashSet<u32> = winning.trim().split_whitespace()
+        let winning: HashSet<u32> = winning.split_whitespace()
             .map(|n| n.parse().unwrap())
             .collect();
-        let selected: Vec<u32> = selected.trim().split_whitespace()
+        let selected: Vec<u32> = selected.split_whitespace()
             .map(|n| n.parse().unwrap())
             .collect();
 
@@ -70,8 +70,8 @@ fn main() {
         let total_cards = card_count[i];
 
         let matches = card.matching_numbers();
-        for j in (i+1)..(i+1+matches) {
-            card_count[j] += total_cards;
+        for count in card_count.iter_mut().skip(i+1).take(matches) {
+            *count += total_cards;
         }
     }
     println!("[Part 2] Total cards: {}", card_count.iter().sum::<u32>());

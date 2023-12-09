@@ -53,12 +53,11 @@ impl HandType {
 
         let jokers = count.remove(&Card::Joker).unwrap_or(0);
 
-        let mut count: Vec<_> = count.iter()
-            .map(|(_, v)| *v)
+        let mut count: Vec<_> = count.into_values()
             .collect();
         count.sort_unstable_by(|a, b| b.cmp(a));
 
-        if count.len() == 0 {
+        if count.is_empty() {
             count.push(0);
         }
 
@@ -95,7 +94,7 @@ impl Hand {
     }
 
     fn from_str(s: &str, with_jokers: bool) -> Result<Self, &'static str> {
-        let [cards, bid] = s.split(" ").collect::<Vec<_>>().try_into()
+        let [cards, bid] = s.split(' ').collect::<Vec<_>>().try_into()
             .map_err(|_| "Invalid format")?;
 
         let cards = cards.chars()
@@ -122,7 +121,7 @@ impl Ord for Hand {
 
 impl PartialOrd for Hand {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(&other))
+        Some(self.cmp(other))
     }
 }
 

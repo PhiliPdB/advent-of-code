@@ -12,7 +12,7 @@ fn main() {
     for y in 0..map.len() {
         let mut x = 0;
         while x < map[y].len() {
-            if !map[y][x].is_digit(10) {
+            if !map[y][x].is_ascii_digit() {
                 x += 1;
                 continue;
             }
@@ -35,7 +35,7 @@ fn main() {
             for y in [y.overflowing_sub(1).0, y, y + 1] {
                 for x in (x as isize - 1)..=(x as isize + length as isize) {
                     if y < map.len() && x > 0 && (x as usize) < map[y].len()
-                        && map[y][x as usize] != '.' && !map[y][x as usize].is_digit(10)
+                        && map[y][x as usize] != '.' && !map[y][x as usize].is_ascii_digit()
                     {
                         if map[y][x as usize] == '*' {
                             match gear_map.entry((y, x as usize)) {

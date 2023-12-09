@@ -1,16 +1,11 @@
 use ndarray::Array3;
 
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum Status {
     On,
+    #[default]
     Off
-}
-
-impl Default for Status {
-    fn default() -> Self {
-        Status::Off
-    }
 }
 
 #[derive(Debug, Clone, Copy)]
