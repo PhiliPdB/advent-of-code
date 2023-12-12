@@ -1,7 +1,5 @@
 use std::str::FromStr;
 
-use hashbrown::HashMap;
-
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Status {
@@ -26,81 +24,82 @@ struct Record {
 }
 
 impl Record {
-    pub fn arrangements(&self, cache: &mut HashMap<(Vec<Status>, Vec<u32>), u64>) -> u64 {
-        Self::calculate_arrangements(cache, &self.status, &self.groups)
+    pub fn arrangements(&self) -> u64 {
+        Self::arrangements_dp(&self.status, &self.groups)
     }
 
-    pub fn unfolded_arrangements(&self, cache: &mut HashMap<(Vec<Status>, Vec<u32>), u64>) -> u64 {
+    pub fn unfolded_arrangements(&self) -> u64 {
         let mut status = self.status.clone();
         status.push(Status::Unknown);
         let status = status.repeat(5);
         let status = &status[..status.len() - 1];
 
-        Self::calculate_arrangements(cache, status, &self.groups.repeat(5))
+        Self::arrangements_dp(status, &self.groups.repeat(5))
     }
 
-    fn calculate_arrangements(cache: &mut HashMap<(Vec<Status>, Vec<u32>), u64>, status: &[Status], groups: &[u32]) -> u64 {
-        let s = status.to_owned();
-        let g = groups.to_owned();
-        if let Some(a) = cache.get(&(s, g)) {
-            return *a;
+    fn arrangements_dp(status: &[Status], groups: &[u32]) -> u64 {
+        let mut dp_table = Vec::with_capacity(groups.len() + 1);
+        for _ in 0..(groups.len() + 1) {
+            dp_table.push(vec![0; status.len() + 1]);
         }
-
-        if groups.is_empty() {
-            if status.iter().all(|s| matches!(s, Status::Operational|Status::Unknown)) {
-                return 1;
-            }
-
-            return 0;
-        }
-        if status.is_empty() {
-            return 0;
-        }
-        if status.len() < groups.iter().sum::<u32>() as usize + groups.len() - 1 {
-            return 0;
-        }
-
-        match status[0] {
-            Status::Operational => {
-                Self::calculate_arrangements(cache, &status[1..], &groups)
-            },
-            Status::Damaged => {
-                if status.len() < groups[0] as usize || status[..(groups[0] as usize)].iter().any(|s| *s == Status::Operational)
-                    || (status.len() > groups[0] as usize && status[groups[0] as usize] == Status::Damaged)
-                {
+        
+        dp_table[groups.len()][status.len()] = 1;
+        for i in (0..status.len()).rev() {
+            dp_table[groups.len()][i] = 
+                if status[i] == Status::Damaged {
                     0
                 } else {
-                    let new_status = if status.len() == groups[0] as usize {
-                        &status[(groups[0] as usize)..]
-                    } else {
-                        &status[(groups[0] as usize) + 1..]
-                    };
-
-                    Self::calculate_arrangements(cache, new_status, &groups[1..])
-                }
-            },
-            Status::Unknown => {
-                let do_nothing = Self::calculate_arrangements(cache, &status[1..], &groups);
-                let do_something = if status.len() >= groups[0] as usize && status[..(groups[0] as usize)].iter().all(|s| *s != Status::Operational)
-                    && (status.len() == groups[0] as usize || status[groups[0] as usize] != Status::Damaged)
-                {
-                    let new_status = if status.len() == groups[0] as usize {
-                        &status[(groups[0] as usize)..]
-                    } else {
-                        &status[(groups[0] as usize) + 1..]
-                    };
-
-                    Self::calculate_arrangements(cache, new_status, &groups[1..])
-                } else {
-                    0
+                    dp_table[groups.len()][i + 1]
                 };
-
-                let s = status.to_owned();
-                let g = groups.to_owned();
-                cache.insert((s, g), do_nothing + do_something);
-                do_nothing + do_something
-            },
         }
+
+        for group_index in (0..groups.len()).rev() {
+            for status_index in (0..status.len()).rev() {
+                if groups[group_index..].iter().sum::<u32>() as usize + (groups[group_index..].len() - 1) > status[status_index..].len() {
+                    // Note table was initialized on 0
+                    continue;
+                }
+
+                dp_table[group_index][status_index] =
+                    match status[status_index] {
+                        Status::Operational => dp_table[group_index][status_index + 1],
+                        Status::Damaged => {
+                            let next_group_size = groups[group_index] as usize;
+                            let fits = status[status_index..(status_index+next_group_size)].iter()
+                                .all(|s| *s != Status::Operational);
+
+                            // Next fits
+                            if fits && next_group_size == status[status_index..].len() {
+                                dp_table[group_index + 1][status_index + next_group_size]
+                            } else if fits && status[status_index + next_group_size] != Status::Damaged {
+                                dp_table[group_index + 1][status_index + next_group_size + 1]
+                            } else {
+                                0
+                            }
+                        },
+                        Status::Unknown => {
+                            let do_nothing = dp_table[group_index][status_index + 1];
+
+                            let next_group_size = groups[group_index] as usize;
+                            let fits = status[status_index..(status_index+next_group_size)].iter()
+                                .all(|s| *s != Status::Operational);
+                            let do_something =
+                                if fits && next_group_size == status[status_index..].len() {
+                                    dp_table[group_index + 1][status_index + next_group_size]
+                                } else if fits && status[status_index + next_group_size] != Status::Damaged {
+                                    dp_table[group_index + 1][status_index + next_group_size + 1]
+                                } else {
+                                    0
+                                };
+
+
+                            do_nothing + do_something
+                        },
+                    }
+            }
+        }
+
+        dp_table[0][0]
     }
 }
 
@@ -132,17 +131,15 @@ fn main() {
         .map(|l| Record::from_str(l).unwrap())
         .collect();
 
-    let mut cache = HashMap::new();
-
 
     let part1_arrangements: u64 = records.iter()
-        .map(|r| r.arrangements(&mut cache))
+        .map(|r| r.arrangements())
         .sum();
     println!("[Part 1] Total arrangements: {part1_arrangements:13}");
 
 
     let part2_arrangements: u64 = records.iter()
-        .map(|r| r.unfolded_arrangements(&mut cache))
+        .map(|r| r.unfolded_arrangements())
         .sum();
     println!("[Part 2] Total arrangements: {part2_arrangements:13}");
 }
