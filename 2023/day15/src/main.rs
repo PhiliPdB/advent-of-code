@@ -23,7 +23,7 @@ fn main() {
     println!("[Part 1] Sum of hashes: {hash_sum}");
 
     // Convert into operations
-    let operations: Vec<_> = sequence.into_iter()
+    let operations = sequence.into_iter()
         .map(|s| {
             if s.contains('=') {
                 let [label, n] = s.split('=').collect::<Vec<_>>()
@@ -33,8 +33,7 @@ fn main() {
             } else {
                 (s[..s.len()-1].to_owned(), Operation::Remove)
             }
-        })
-        .collect();
+        });
 
 
     const TOTAL_BOXES: usize = 256;
