@@ -1,5 +1,7 @@
-use std::collections::{BinaryHeap, HashSet};
+use std::collections::BinaryHeap;
 use std::cmp::Ordering;
+
+use hashbrown::HashSet;
 
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -56,15 +58,16 @@ fn heat_loss<const MAX_IN_SAME_DIRECTION: u32, const TURN_RADIUS: u32>(map: &Vec
         }
 
         for direction in [Heading::North, Heading::East, Heading::South, Heading::West] {
+            let turning = heading != direction;
+            if (!turning && in_same_direction == MAX_IN_SAME_DIRECTION)
+                || (turning && in_same_direction > MAX_IN_SAME_DIRECTION - TURN_RADIUS)
+            {
+                continue;
+            }
+
             match direction {
                 Heading::North => {
-                    let turning = heading != direction;
                     if heading == Heading::South || y == 0 {
-                        continue;
-                    }
-                    if (!turning && in_same_direction == MAX_IN_SAME_DIRECTION)
-                        || (turning && in_same_direction > MAX_IN_SAME_DIRECTION - TURN_RADIUS)
-                    {
                         continue;
                     }
 
@@ -83,13 +86,7 @@ fn heat_loss<const MAX_IN_SAME_DIRECTION: u32, const TURN_RADIUS: u32>(map: &Vec
                     }
                 },
                 Heading::East => {
-                    let turning = heading != direction;
                     if heading == Heading::West || x == width - 1 {
-                        continue;
-                    }
-                    if (!turning && in_same_direction == MAX_IN_SAME_DIRECTION)
-                        || (turning && in_same_direction > MAX_IN_SAME_DIRECTION - TURN_RADIUS)
-                    {
                         continue;
                     }
 
@@ -108,13 +105,7 @@ fn heat_loss<const MAX_IN_SAME_DIRECTION: u32, const TURN_RADIUS: u32>(map: &Vec
                     }
                 },
                 Heading::South => {
-                    let turning = heading != direction;
                     if heading == Heading::North || y == height - 1 {
-                        continue;
-                    }
-                    if (!turning && in_same_direction == MAX_IN_SAME_DIRECTION)
-                        || (turning && in_same_direction > MAX_IN_SAME_DIRECTION - TURN_RADIUS)
-                    {
                         continue;
                     }
 
@@ -133,13 +124,7 @@ fn heat_loss<const MAX_IN_SAME_DIRECTION: u32, const TURN_RADIUS: u32>(map: &Vec
                     }
                 },
                 Heading::West => {
-                    let turning = heading != direction;
                     if heading == Heading::East || x == 0 {
-                        continue;
-                    }
-                    if (!turning && in_same_direction == MAX_IN_SAME_DIRECTION)
-                        || (turning && in_same_direction > MAX_IN_SAME_DIRECTION - TURN_RADIUS)
-                    {
                         continue;
                     }
 
