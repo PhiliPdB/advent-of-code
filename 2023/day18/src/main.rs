@@ -85,7 +85,7 @@ fn calculate_volume(instructions: &[Instruction]) -> i64 {
     }
     vertices.push(vertices[0]);
 
-    // Calculate volume using the Shoelace Formula
+    // Calculate 'volume' using the Shoelace Formula (this is the area of the polygon, called A)
     let volume = vertices.windows(2)
         .fold(0, |acc, p| {
             let (p1_x, p1_y) = p[0];
@@ -95,6 +95,10 @@ fn calculate_volume(instructions: &[Instruction]) -> i64 {
         }) / 2;
 
     // Using Pick's Theorem to calculate the final lava volume
+    // Final answer := Number of interior points (I) + boundary points (b).
+    // From Pick's Theorem, we know that A = I + b/2 - 1.
+    // Therefore, I = A - b/2 + 1.
+    // Since we need I + b, we get the final formula as: A + b/2 + 1
     volume + perimeter_size / 2 + 1
 }
 
