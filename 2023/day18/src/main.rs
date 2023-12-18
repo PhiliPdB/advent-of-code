@@ -86,14 +86,13 @@ fn calculate_volume(instructions: &[Instruction]) -> i64 {
     vertices.push(vertices[0]);
 
     // Calculate volume using the Shoelace Formula
-    let mut volume = 0;
-    for p in vertices.windows(2) {
-        let p1 = p[0];
-        let p2 = p[1];
+    let volume = vertices.windows(2)
+        .fold(0, |acc, p| {
+            let (p1_x, p1_y) = p[0];
+            let (p2_x, p2_y) = p[1];
 
-        volume += (p1.0 * p2.1) as i64 - (p2.0 * p1.1) as i64;
-    }
-    volume /= 2;
+            acc + (p1_x * p2_y) - (p2_x * p1_y)
+        }) / 2;
 
     // Using Pick's Theorem to calculate the final lava volume
     volume + perimeter_size / 2 + 1
