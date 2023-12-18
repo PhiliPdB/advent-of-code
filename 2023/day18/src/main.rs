@@ -58,9 +58,10 @@ impl FromStr for Instruction {
 }
 
 fn calculate_volume(instructions: &[Instruction]) -> i64 {
-    let (mut current_x, mut current_y) = (1, 1);
-    let mut points = Vec::with_capacity(instructions.len());
-    points.push((current_x, current_y));
+    let (mut current_x, mut current_y) = (0, 0);
+    // Save the vertices of the polygon we create
+    let mut vertices = Vec::with_capacity(instructions.len());
+    vertices.push((current_x, current_y));
 
     let mut perimeter_size = 0;
     for Instruction { direction, distance } in instructions {
@@ -79,19 +80,23 @@ fn calculate_volume(instructions: &[Instruction]) -> i64 {
             },
         }
 
-        points.push((current_x, current_y));
+        vertices.push((current_x, current_y));
         perimeter_size += distance;
     }
+    vertices.push(vertices[0]);
 
+    // Calculate volume using the Shoelace Formula
     let mut volume = 0;
-    for p in points.windows(2) {
+    for p in vertices.windows(2) {
         let p1 = p[0];
         let p2 = p[1];
 
         volume += (p1.0 * p2.1) as i64 - (p2.0 * p1.1) as i64;
     }
+    volume /= 2;
 
-    volume / 2 + perimeter_size / 2 + 1
+    // Using Pick's Theorem to calculate the final lava volume
+    volume + perimeter_size / 2 + 1
 }
 
 
@@ -100,12 +105,12 @@ fn main() {
         .lines()
         .map(|l| Instruction::from_str(l).unwrap())
         .collect();
-    println!("[Part 1] Volume: {}", calculate_volume(&part1_instructions));
+    println!("[Part 1] Volume: {:14}", calculate_volume(&part1_instructions));
 
 
     let part2_instructions: Vec<_> = include_str!("../input.txt")
         .lines()
         .map(|l| Instruction::parse_from_color(l))
         .collect();
-    println!("[Part 2] Volume: {}", calculate_volume(&part2_instructions));
+    println!("[Part 2] Volume: {:14}", calculate_volume(&part2_instructions));
 }
