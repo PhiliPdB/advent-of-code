@@ -66,7 +66,7 @@ impl Rules {
         let mut queue = Vec::new();
         queue.push((self.rule_map["in"], [(1, 4000), (1, 4000), (1, 4000), (1, 4000)]));
 
-        let mut accept_ranges = Vec::new();
+        let mut accept_ranges: Vec<[(u32, u32); 4]> = Vec::new();
 
         while let Some((current_rule, ranges@[cool_range, musical_range, aerodynamic_range, shiny_range])) = queue.pop() {
             for rule in &self.rules[current_rule] {
@@ -113,12 +113,29 @@ impl Rules {
                         queue.push((*r, ranges));
                     },
                     Rule::Reject => (),
-                    Rule::Accept => accept_ranges.push(ranges),
+                    Rule::Accept => {
+                        let has_dominant = accept_ranges.iter()
+                            .filter(|r| {
+                                r.iter().zip(ranges.iter())
+                                    .all(|(r1, r2)| r1.0 <= r2.0 && r2.1 <= r1.1)
+                            })
+                            .count() != 0;
+
+                        if !has_dominant {
+                            accept_ranges.push(ranges);
+                        }
+                    },
                 }
             }
         }
 
         println!("{accept_ranges:?}");
+        let total_combinations: u64 = accept_ranges.into_iter()
+            .map(|ranges| {
+                ranges.iter().fold(1, |acc, r| acc * (r.1 - r.0 + 1) as u64)
+            })
+            .sum();
+        println!("{total_combinations}");
         todo!()
     }
 }
