@@ -62,81 +62,70 @@ impl Rules {
         }
     }
 
-    fn part_number_ranges(&self) {
+    fn total_accepted_parts(&self) -> u64 {
+        let mut total_accepted_parts = 0;
+
         let mut queue = Vec::new();
         queue.push((self.rule_map["in"], [(1, 4000), (1, 4000), (1, 4000), (1, 4000)]));
 
-        let mut accept_ranges: Vec<[(u32, u32); 4]> = Vec::new();
-
-        while let Some((current_rule, ranges@[cool_range, musical_range, aerodynamic_range, shiny_range])) = queue.pop() {
+        while let Some((current_rule, mut ranges)) = queue.pop() {
             for rule in &self.rules[current_rule] {
                 match rule {
                     Rule::LessThan(c, n, r) => {
                         let new_range = match *c {
-                            Category::CoolLooking => [(cool_range.0, cool_range.1.min(*n)), musical_range, aerodynamic_range, shiny_range],
-                            Category::Musical => [cool_range, (musical_range.0, musical_range.1.min(*n)), aerodynamic_range, shiny_range],
-                            Category::Aerodynamic => [cool_range, musical_range, (aerodynamic_range.0, aerodynamic_range.1.min(*n)), shiny_range],
-                            Category::Shiny => [cool_range, musical_range, aerodynamic_range, (shiny_range.0, shiny_range.1.min(*n))],
+                            Category::CoolLooking => [(ranges[0].0, ranges[0].1.min(*n - 1)), ranges[1], ranges[2], ranges[3]],
+                            Category::Musical     => [ranges[0], (ranges[1].0, ranges[1].1.min(*n - 1)), ranges[2], ranges[3]],
+                            Category::Aerodynamic => [ranges[0], ranges[1], (ranges[2].0, ranges[2].1.min(*n - 1)), ranges[3]],
+                            Category::Shiny       => [ranges[0], ranges[1], ranges[2], (ranges[3].0, ranges[3].1.min(*n - 1))],
                         };
                         queue.push((*r, new_range));
 
-                        let current_max = match *c {
-                            Category::CoolLooking => cool_range.1,
-                            Category::Musical => musical_range.1,
-                            Category::Aerodynamic => aerodynamic_range.1,
-                            Category::Shiny => shiny_range.1,
-                        };
+                        let current_max = ranges[*c as usize].1;
                         if current_max < *n {
                             break;
                         }
+
+                        ranges = match *c {
+                            Category::CoolLooking => [(ranges[0].1.min(*n), ranges[0].1), ranges[1], ranges[2], ranges[3]],
+                            Category::Musical     => [ranges[0], (ranges[1].1.min(*n), ranges[1].1), ranges[2], ranges[3]],
+                            Category::Aerodynamic => [ranges[0], ranges[1], (ranges[2].1.min(*n), ranges[2].1), ranges[3]],
+                            Category::Shiny       => [ranges[0], ranges[1], ranges[2], (ranges[3].1.min(*n), ranges[3].1)],
+                        };
                     },
                     Rule::GreaterThan(c, n, r) => {
                         let new_range = match *c {
-                            Category::CoolLooking => [(cool_range.0.max(*n), cool_range.1), musical_range, aerodynamic_range, shiny_range],
-                            Category::Musical => [cool_range, (musical_range.0.max(*n), musical_range.1), aerodynamic_range, shiny_range],
-                            Category::Aerodynamic => [cool_range, musical_range, (aerodynamic_range.0.max(*n), aerodynamic_range.1), shiny_range],
-                            Category::Shiny => [cool_range, musical_range, aerodynamic_range, (shiny_range.0.max(*n), shiny_range.1)],
+                            Category::CoolLooking => [(ranges[0].0.max(*n + 1), ranges[0].1), ranges[1], ranges[2], ranges[3]],
+                            Category::Musical     => [ranges[0], (ranges[1].0.max(*n + 1), ranges[1].1), ranges[2], ranges[3]],
+                            Category::Aerodynamic => [ranges[0], ranges[1], (ranges[2].0.max(*n + 1), ranges[2].1), ranges[3]],
+                            Category::Shiny       => [ranges[0], ranges[1], ranges[2], (ranges[3].0.max(*n + 1), ranges[3].1)],
                         };
                         queue.push((*r, new_range));
 
-                        let current_min = match *c {
-                            Category::CoolLooking => cool_range.0,
-                            Category::Musical => musical_range.0,
-                            Category::Aerodynamic => aerodynamic_range.0,
-                            Category::Shiny => shiny_range.0,
-                        };
+                        let current_min = ranges[*c as usize].0;
                         if current_min > *n {
                             break;
                         }
+
+                        ranges = match *c {
+                            Category::CoolLooking => [(ranges[0].0, ranges[0].0.max(*n)), ranges[1], ranges[2], ranges[3]],
+                            Category::Musical     => [ranges[0], (ranges[1].0, ranges[1].0.max(*n)), ranges[2], ranges[3]],
+                            Category::Aerodynamic => [ranges[0], ranges[1], (ranges[2].0, ranges[2].0.max(*n)), ranges[3]],
+                            Category::Shiny       => [ranges[0], ranges[1], ranges[2], (ranges[3].0, ranges[3].0.max(*n))],
+                        };
                     },
                     Rule::Rule(r) => {
                         queue.push((*r, ranges));
                     },
-                    Rule::Reject => (),
+                    Rule::Reject => break,
                     Rule::Accept => {
-                        let has_dominant = accept_ranges.iter()
-                            .filter(|r| {
-                                r.iter().zip(ranges.iter())
-                                    .all(|(r1, r2)| r1.0 <= r2.0 && r2.1 <= r1.1)
-                            })
-                            .count() != 0;
-
-                        if !has_dominant {
-                            accept_ranges.push(ranges);
-                        }
+                        total_accepted_parts += ranges.iter()
+                            .fold(1, |acc, r| acc * (r.1 - r.0 + 1) as u64)
                     },
                 }
             }
         }
 
-        println!("{accept_ranges:?}");
-        let total_combinations: u64 = accept_ranges.into_iter()
-            .map(|ranges| {
-                ranges.iter().fold(1, |acc, r| acc * (r.1 - r.0 + 1) as u64)
-            })
-            .sum();
-        println!("{total_combinations}");
-        todo!()
+        total_accepted_parts
     }
 }
 
@@ -295,5 +284,5 @@ fn main() {
         .sum();
     println!("[Part 1] Rating sum of accepted parts: {accepted_sum}");
 
-    rules.part_number_ranges();
+    println!("[Part 2] Total accepted parts: {}", rules.total_accepted_parts());
 }
