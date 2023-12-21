@@ -92,6 +92,33 @@ impl FromStr for Map {
 fn main() {
     let map = Map::from_str(include_str!("../input.txt")).unwrap();
 
-    println!("[Part 1] Reachable: {}", map.reachable_in_exact::<false>(64));
-    println!("[Part 2] Reachable: {}", map.reachable_in_exact::<true>(26_501_365));
+    println!("[Part 1] Reachable: {:15}", map.reachable_in_exact::<false>(64));
+
+    //
+    // Part 2
+    //
+
+    const STEP_GOAL: u32 = 26_501_365;
+    let grid_size = map.map.len() as u32;
+
+    // Wolfram Alpha found a quadratic function when analyzing the reachable steps
+    // where we increased the number of steps by the size of the grid.
+    // For this we start at STEP_GOAL mod grid size, such that after n increases,
+    // we reach the step goal
+    let start = STEP_GOAL % grid_size;
+    let n = (STEP_GOAL / grid_size) as u64;
+    
+    // Find values for x = 0, .., x = 2
+    // This enough the calculate the quadratic function
+    let values: Vec<_> = (0..3).into_iter()
+        .map(|i| map.reachable_in_exact::<true>(start + i * grid_size))
+        .collect();
+
+    // Values for ax^2 + bx + c
+    let a = (values[2] + values[0]) / 2 - values[1];
+    let b = values[1] - values[0] - a;
+    let c = values[0];
+    
+    // Then find the final answer using n and the quadratic function
+    println!("[Part 2] Reachable: {:15}", a * n * n + b * n + c);
 }
