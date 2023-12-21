@@ -10,12 +10,12 @@ enum Plot {
 }
 
 #[derive(Debug)]
-struct Map {
+struct Garden {
     map: Vec<Vec<Plot>>,
     starting_position: (i32, i32),
 }
 
-impl Map {
+impl Garden {
     fn reachable_in_exact<const INFINITE_MAP: bool>(&self, steps: u32) -> u64 {
         let height = self.map.len() as i32;
         let width = self.map[0].len() as i32;
@@ -63,7 +63,7 @@ impl Map {
     }
 }
 
-impl FromStr for Map {
+impl FromStr for Garden {
     type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -90,16 +90,16 @@ impl FromStr for Map {
 
 
 fn main() {
-    let map = Map::from_str(include_str!("../input.txt")).unwrap();
+    let garden = Garden::from_str(include_str!("../input.txt")).unwrap();
 
-    println!("[Part 1] Reachable: {:15}", map.reachable_in_exact::<false>(64));
+    println!("[Part 1] Reachable: {:15}", garden.reachable_in_exact::<false>(64));
 
     //
     // Part 2
     //
 
     const STEP_GOAL: u32 = 26_501_365;
-    let grid_size = map.map.len() as u32;
+    let grid_size = garden.map.len() as u32;
 
     // Wolfram Alpha found a quadratic function when analyzing the reachable steps
     // where we increased the number of steps by the size of the grid.
@@ -107,18 +107,18 @@ fn main() {
     // we reach the step goal
     let start = STEP_GOAL % grid_size;
     let n = (STEP_GOAL / grid_size) as u64;
-    
+
     // Find values for x = 0, .., x = 2
     // This enough the calculate the quadratic function
-    let values: Vec<_> = (0..3).into_iter()
-        .map(|i| map.reachable_in_exact::<true>(start + i * grid_size))
+    let steps: Vec<_> = (0..3).into_iter()
+        .map(|i| garden.reachable_in_exact::<true>(start + i * grid_size))
         .collect();
 
     // Values for ax^2 + bx + c
-    let a = (values[2] + values[0]) / 2 - values[1];
-    let b = values[1] - values[0] - a;
-    let c = values[0];
-    
+    let a = (steps[2] + steps[0]) / 2 - steps[1];
+    let b = steps[1] - steps[0] - a;
+    let c = steps[0];
+
     // Then find the final answer using n and the quadratic function
-    println!("[Part 2] Reachable: {:15}", a * n * n + b * n + c);
+    println!("[Part 2] Reachable: {:15}", a*n*n + b*n + c);
 }
