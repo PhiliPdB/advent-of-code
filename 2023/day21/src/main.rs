@@ -26,7 +26,7 @@ impl Garden {
         queue.push_back((self.starting_position, 0));
         let mut visited = HashSet::new();
 
-        let is_steps_even = steps % 2 == 0;
+        let steps_parity = steps % 2;
         while let Some(((y, x), s)) = queue.pop_front() {
             if !visited.insert((y, x)) {
                 continue;
@@ -34,7 +34,7 @@ impl Garden {
 
             // Note we could reach this position again in an even number of steps,
             // so check parity with steps required
-            if (is_steps_even && s % 2 == 0) || (!is_steps_even && s % 2 == 1)  {
+            if steps_parity == s % 2 {
                 reachable += 1;
             }
             if s == steps {
