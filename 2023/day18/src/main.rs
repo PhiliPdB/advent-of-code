@@ -113,7 +113,7 @@ fn main() {
 
     let part2_instructions: Vec<_> = include_str!("../input.txt")
         .lines()
-        .map(|l| Instruction::parse_from_color(l))
+        .map(Instruction::parse_from_color)
         .collect();
     println!("[Part 2] Volume: {:14}", calculate_volume(&part2_instructions));
 }

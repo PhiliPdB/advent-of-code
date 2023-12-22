@@ -110,7 +110,7 @@ fn main() {
 
     // Find values for x = 0, .., x = 2
     // This enough the calculate the quadratic function
-    let steps: Vec<_> = (0..3).into_iter()
+    let steps: Vec<_> = (0..3)
         .map(|i| garden.reachable_in_exact::<true>(start + i * grid_size))
         .collect();
 

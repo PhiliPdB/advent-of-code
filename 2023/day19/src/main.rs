@@ -251,7 +251,7 @@ impl FromStr for Part {
         let s = &s[1..s.len()-1];
 
         let part: Vec<u32> = s.split(',')
-            .map(|s| s.split('=').skip(1).next().unwrap())
+            .map(|s| s.split('=').nth(1).unwrap())
             .map(|s| s.parse().unwrap())
             .collect();
 

@@ -62,7 +62,7 @@ impl Machines {
 
         let mut low_pulses = 0;
         let mut high_pulses = 0;
-        
+
         while let Some((from, module_index, pulse)) = pulse_queue.pop_front() {
             let (module, sends_to) = &mut self.modules[module_index];
             if let Some(i) = pulsed_high {
@@ -83,7 +83,7 @@ impl Machines {
             match module {
                 Module::FlipFlop(state) => {
                     let state = *state;
-                    
+
                     if pulse == Pulse::High {
                         continue;
                     } else {
@@ -128,7 +128,7 @@ impl FromStr for Machines {
             let [module, sends_to] = l.split(" -> ").collect::<Vec<_>>()
                 .try_into().map_err(|_| "Invalid module format")?;
 
-            let (index, module) = 
+            let (index, module) =
                 if module == "broadcaster" {
                     name_lookup.insert(module.to_owned(), modules.len());
                     modules.push((Module::Broadcast, Vec::new()));
@@ -188,8 +188,8 @@ impl FromStr for Machines {
             }
 
             let mut conjunction_inputs = Vec::new();
-            for j in 0..modules.len() {
-                if modules[j].1.contains(&i) {
+            for (j, module) in modules.iter().enumerate() {
+                if module.1.contains(&i) {
                     conjunction_inputs.push(j);
                 }
             }
@@ -201,7 +201,7 @@ impl FromStr for Machines {
                 unreachable!();
             }
         }
-        
+
         Ok(Self { modules, name_lookup })
     }
 }

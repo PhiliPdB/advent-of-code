@@ -47,7 +47,7 @@ fn build_brick_map(bricks: &[Brick]) -> Vec<Vec<Vec<Option<usize>>>> {
         for z in brick.from.2..brick.to.2+1 {
             for y in brick.from.1..brick.to.1+1 {
                 for x in brick.from.0..brick.to.0+1 {
-                    debug_assert!(brick_map[z as usize][y as usize][x as usize] == None);
+                    debug_assert!(brick_map[z as usize][y as usize][x as usize].is_none());
                     brick_map[z as usize][y as usize][x as usize] = Some(i);
                 }
             }
@@ -70,7 +70,7 @@ fn free_fall(bricks: &mut [Brick], brick_map: &mut Vec<Vec<Vec<Option<usize>>>>)
             let mut is_empty = true;
             'empty_check: for y in brick.from.1..brick.to.1+1 {
                 for x in brick.from.0..brick.to.0+1 {
-                    if let Some(_) = brick_map[z as usize][y as usize][x as usize] {
+                    if brick_map[z as usize][y as usize][x as usize].is_some() {
                         is_empty = false;
                         break 'empty_check;
                     }
@@ -82,7 +82,7 @@ fn free_fall(bricks: &mut [Brick], brick_map: &mut Vec<Vec<Vec<Option<usize>>>>)
 
                 for y in brick.from.1..brick.to.1+1 {
                     for x in brick.from.0..brick.to.0+1 {
-                        debug_assert!(brick_map[z as usize][y as usize][x as usize] == None);
+                        debug_assert!(brick_map[z as usize][y as usize][x as usize].is_none());
                         brick_map[z as usize][y as usize][x as usize] = Some(i);
                     }
                 }
@@ -173,13 +173,13 @@ fn main() {
     // Preparations are done, let's calculate the answers
     //
 
-    let can_be_disintegrated = (0..bricks.len()).into_iter()
+    let can_be_disintegrated = (0..bricks.len())
         .filter(|i| supports[*i].iter().all(|j| supported_by[*j].len() > 1))
         .count();
     println!("[Part 1] Safely disintegrated bricks: {can_be_disintegrated}");
 
 
-    let disintegrates = (0..bricks.len()).into_iter()
+    let disintegrates = (0..bricks.len())
         .map(|i| disintegrates(i, &supports, &supported_by));
     println!("[Part 2] Falling sum: {}", disintegrates.sum::<usize>());
 }
