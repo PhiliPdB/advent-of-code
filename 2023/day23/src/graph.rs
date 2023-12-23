@@ -73,7 +73,7 @@ impl Graph {
 
     /// Convert a map into a graph
     /// With or without the slopes
-    pub(crate) fn from_map<const WITH_SLOPES: bool>(map: Map) -> Self {
+    pub(crate) fn from_map<const WITH_SLOPES: bool>(map: &Map) -> Self {
         let mut node_lookup = HashMap::new();
         node_lookup.insert(map.start(), 0);
         node_lookup.insert(map.goal(), 1);
