@@ -86,7 +86,7 @@ impl Map {
                 })
                 .collect();
 
-            if can_continue_in.len() > 1 || can_continue_in.len() == 0 {
+            if can_continue_in.len() > 1 || can_continue_in.is_empty() {
                 return (steps, (x, y));
             }
             direction = can_continue_in[0];
@@ -98,35 +98,19 @@ impl Map {
 
     fn can_continue<const WITH_SLOPES: bool>(&self, (x, y): (usize, usize), direction: Direction) -> bool {
         match self.map[y][x] {
-            Trail::Path => true,
+            Trail::Path   => true,
             Trail::Forest => false,
             Trail::SlopeNorth => {
-                if !WITH_SLOPES || direction == Direction::North {
-                    true
-                } else {
-                    false
-                }
+                !WITH_SLOPES || direction == Direction::North
             },
             Trail::SlopeSouth => {
-                if !WITH_SLOPES || direction == Direction::South {
-                    true
-                } else {
-                    false
-                }
+                !WITH_SLOPES || direction == Direction::South
             },
             Trail::SlopeWest => {
-                if !WITH_SLOPES || direction == Direction::West {
-                    true
-                } else {
-                    false
-                }
+                !WITH_SLOPES || direction == Direction::West
             },
             Trail::SlopeEast => {
-                if !WITH_SLOPES || direction == Direction::East {
-                    true
-                } else {
-                    false
-                }
+                !WITH_SLOPES || direction == Direction::East
             },
         }
     }
