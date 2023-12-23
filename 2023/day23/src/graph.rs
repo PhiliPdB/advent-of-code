@@ -63,7 +63,7 @@ impl Graph {
                     continue;
                 }
 
-                queue.push((l + *steps, *next, visited.clone()));
+                queue.push((l + *steps, *next, visited));
             }
         }
 
