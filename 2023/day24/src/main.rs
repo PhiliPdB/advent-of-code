@@ -25,12 +25,12 @@ impl Hail {
         // Using Cramer's rule to solve the linear equations
 
         let velocity_matrix = Matrix2::new(
-            self.velocity.0 as f64, -other.velocity.0 as f64,
-            self.velocity.1 as f64, -other.velocity.1 as f64
+            self.velocity.0, -other.velocity.0,
+            self.velocity.1, -other.velocity.1
         );
         let position = Vector2::new(
-            (other.position.0 - self.position.0) as f64,
-            (other.position.1 - self.position.1) as f64
+            other.position.0 - self.position.0,
+            other.position.1 - self.position.1
         );
 
 
@@ -137,10 +137,10 @@ fn main() {
 
             // Figure out the correct value for vz and z
 
-            let t1 = (x as f64 - hail_stones[0].position.0) / (hail_stones[0].velocity.0 - vx as f64);
+            let t1 = (x - hail_stones[0].position.0) / (hail_stones[0].velocity.0 - vx as f64);
             let z1 = hail_stones[0].position.2 + t1 * hail_stones[0].velocity.2;
 
-            let t2 = (x as f64 - hail_stones[1].position.0) / (hail_stones[1].velocity.0 - vx as f64);
+            let t2 = (x - hail_stones[1].position.0) / (hail_stones[1].velocity.0 - vx as f64);
             let z2 = hail_stones[1].position.2 + t2 * hail_stones[1].velocity.2;
 
             let vz = (z2 - z1) / (t2 - t1);
