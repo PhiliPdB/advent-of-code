@@ -2,17 +2,17 @@
 fn is_safe(report: &[u32]) -> bool {
     let is_increasing = report[0] < report[report.len() - 1];
 
-        for w in report.windows(2) {
-            if u32::abs_diff(w[0], w[1]) > 3
-                || w[0] == w[1]
-                || (is_increasing && w[0] > w[1])
-                || (!is_increasing && w[0] < w[1])
-            {
-                return false;
-            }
+    for w in report.windows(2) {
+        if u32::abs_diff(w[0], w[1]) > 3
+            || w[0] == w[1]
+            || (is_increasing && w[0] > w[1])
+            || (!is_increasing && w[0] < w[1])
+        {
+            return false;
         }
+    }
 
-        true
+    true
 }
 
 fn main() {
