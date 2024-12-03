@@ -29,10 +29,10 @@ fn main() {
         }
 
         if enabled {
-            let x = c.get(1).map_or("", |m| m.as_str());
-            let y = c.get(2).map_or("", |m| m.as_str());
+            let x = c.get(1).map_or(0, |m| m.as_str().parse().unwrap());
+            let y = c.get(2).map_or(0, |m| m.as_str().parse().unwrap());
 
-            part2_mult_sum += x.parse::<i32>().unwrap() * y.parse::<i32>().unwrap()
+            part2_mult_sum += x * y;
         }
     }
     println!("[Part 2] Mul sum: {part2_mult_sum:9}");
