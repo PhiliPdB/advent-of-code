@@ -9,7 +9,7 @@ enum State {
 }
 
 impl State {
-    fn from_char(c: char) -> Option<Self> {
+    pub fn from_char(c: char) -> Option<Self> {
         match c {
             '.' => Some(Self::Empty),
             '#' => Some(Self::Obstruction),
@@ -24,7 +24,7 @@ enum Heading {
 }
 
 impl Heading {
-    fn from_char(c: char) -> Self {
+    pub fn from_char(c: char) -> Self {
         match c {
             '^' => Self::North,
             '>' => Self::East,
@@ -34,12 +34,21 @@ impl Heading {
         }
     }
 
-    fn turn_right(&self) -> Self {
+    pub fn turn_right(&self) -> Self {
         match self {
             Self::North => Self::East,
             Self::East  => Self::South,
             Self::South => Self::West,
             Self::West  => Self::North,
+        }
+    }
+
+    pub fn next_step(&self, (x, y): (usize, usize)) -> (usize, usize) {
+        match self {
+            Heading::North => (x, y.wrapping_sub(1)),
+            Heading::East  => (x.wrapping_add(1), y),
+            Heading::South => (x, y.wrapping_add(1)),
+            Heading::West  => (x.wrapping_sub(1), y),
         }
     }
 }
@@ -51,25 +60,45 @@ struct Map {
 }
 
 impl Map {
-    fn guard_positions(&self) -> (HashSet<(usize, usize)>, bool) {
+    pub fn guard_positions(&self) -> HashSet<(usize, usize)> {
         let width = self.map[0].len();
         let height = self.map.len();
 
         let (mut x, mut y, mut heading) = self.guard;
 
         let mut positions = HashSet::new();
-        let mut position_heading = HashSet::new();
-        let mut is_loop = false;
-        while x < width && y < height {
+        loop {
             positions.insert((x, y));
             debug_assert!(self.map[y][x] == State::Empty);
 
-            let (next_x, next_y) = match heading {
-                Heading::North => (x, y.wrapping_sub(1)),
-                Heading::East  => (x.wrapping_add(1), y),
-                Heading::South => (x, y.wrapping_add(1)),
-                Heading::West  => (x.wrapping_sub(1), y),
-            };
+            let (next_x, next_y) = heading.next_step((x, y));
+            if !(next_x < width && next_y < height) {
+                break;
+            }
+
+            match self.map[next_y][next_x] {
+                State::Empty => {
+                    x = next_x;
+                    y = next_y;
+                },
+                State::Obstruction => {
+                    heading = heading.turn_right();
+                },
+            }
+        }
+        positions
+    }
+
+    pub fn is_guard_loop(&self) -> bool {
+        let width = self.map[0].len();
+        let height = self.map.len();
+
+        let (mut x, mut y, mut heading) = self.guard;
+
+        let mut position_heading = HashSet::new();
+        loop {
+            debug_assert!(self.map[y][x] == State::Empty);
+            let (next_x, next_y) = heading.next_step((x, y));
             if !(next_x < width && next_y < height) {
                 break;
             }
@@ -83,27 +112,25 @@ impl Map {
                     heading = heading.turn_right();
 
                     if !position_heading.insert((x, y, heading)) {
-                        is_loop = true;
-                        break;
+                        return true;
                     }
                 },
             }
         }
-        (positions, is_loop)
+        false
     }
 
     fn obstacle_locations(&mut self) -> usize {
         let mut locations = 0;
-        let (positions, _) = self.guard_positions();
+        let positions = self.guard_positions();
 
         for (x, y) in positions.into_iter() {
-            // println!("Checking: {x},{y}");
             if x == self.guard.0 && y == self.guard.1 {
                 continue;
             }
 
             self.map[y][x] = State::Obstruction;
-            let (_, is_loop) = self.guard_positions();
+            let is_loop = self.is_guard_loop();
             self.map[y][x] = State::Empty;
 
             if is_loop {
@@ -142,7 +169,7 @@ impl FromStr for Map {
 fn main() {
     let map= Map::from_str(include_str!("../input.txt")).unwrap();
 
-    let (visited_positions, _) = map.guard_positions();
+    let visited_positions = map.guard_positions();
     println!("[Part 1] Visited positions: {}", visited_positions.len());
 
     let mut map = map;
