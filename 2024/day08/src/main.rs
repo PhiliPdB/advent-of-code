@@ -14,7 +14,7 @@ impl Map {
     fn antinodes<const PART2: bool>(&self) -> HashSet<(usize, usize)> {
         let mut locations = HashSet::new();
 
-        for (_, points) in &self.antennas {
+        for points in self.antennas.values() {
             for p in points.iter().combinations(2) {
                 let (p1, p2) = (p[0], p[1]);
                 let (x1, y1) = *p1;
