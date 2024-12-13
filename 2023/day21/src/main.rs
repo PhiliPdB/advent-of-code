@@ -45,14 +45,15 @@ impl Garden {
                 let new_y = y + dy;
                 let new_x = x + dx;
 
-                if !INFINITE_MAP
-                    && 0 <= new_y && new_y < height
-                    && 0 <= new_x && new_x < width
-                    && self.map[new_y as usize][new_x as usize] != Plot::Rock
-                {
-                    queue.push_back(((new_y, new_x), s + 1));
-                } else if INFINITE_MAP
-                    && self.map[new_y.rem_euclid(width) as usize][new_x.rem_euclid(height) as usize] != Plot::Rock
+                if (
+                        !INFINITE_MAP
+                        && 0 <= new_y && new_y < height
+                        && 0 <= new_x && new_x < width
+                        && self.map[new_y as usize][new_x as usize] != Plot::Rock
+                    ) || (
+                        INFINITE_MAP
+                        && self.map[new_y.rem_euclid(width) as usize][new_x.rem_euclid(height) as usize] != Plot::Rock
+                    )
                 {
                     queue.push_back(((new_y, new_x), s + 1));
                 }

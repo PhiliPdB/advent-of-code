@@ -2,6 +2,7 @@ use std::str::FromStr;
 use std::collections::HashSet;
 
 
+type Coord<T> = (T, T);
 
 #[derive(Debug)]
 struct Garden {
@@ -27,7 +28,8 @@ impl Garden {
         regions
     }
 
-    fn region_size(&self, (start_x, start_y): (usize, usize), visited: &mut Vec<Vec<bool>>) -> (u32, u32, u32) {
+    #[allow(clippy::ptr_arg)]
+    fn region_size(&self, (start_x, start_y): Coord<usize>, visited: &mut Vec<Vec<bool>>) -> (u32, u32, u32) {
         let mut queue = vec![(start_x, start_y)];
         let mut area = 0;
         let mut perimeter = 0;
@@ -78,37 +80,37 @@ impl Garden {
 
     /// Find the side a boundary belongs to and insert it to the HashSet of sides
     fn update_sides(&self,
-        sides: &mut HashSet<((i32, i32), (i32, i32))>,
-        (x, y): (usize, usize),
+        sides: &mut HashSet<(Coord<i32>, Coord<i32>)>,
+        (x, y): Coord<usize>,
         vertical: bool, boundary_step: i32,
     ) {
         let plot_char = self.map[y][x];
 
         let (mut x, mut y) = (x, y);
-        let boundary_coord;
-        if vertical {
-            let boundary_x = x as i32 + boundary_step;
-            let width = self.map[0].len() as i32;
+        let boundary_coord =
+            if vertical {
+                let boundary_x = x as i32 + boundary_step;
+                let width = self.map[0].len() as i32;
 
-            while y > 0 && self.map[y - 1][x] == plot_char
-                && (boundary_x < 0 || boundary_x >= width || self.map[y - 1][boundary_x as usize] != plot_char)
-            {
-                y -= 1;
-            }
+                while y > 0 && self.map[y - 1][x] == plot_char
+                    && (boundary_x < 0 || boundary_x >= width || self.map[y - 1][boundary_x as usize] != plot_char)
+                {
+                    y -= 1;
+                }
 
-            boundary_coord = (boundary_x, y as i32);
-        } else {
-            let boundary_y = y as i32 + boundary_step;
-            let height = self.map.len() as i32;
+                (boundary_x, y as i32)
+            } else {
+                let boundary_y = y as i32 + boundary_step;
+                let height = self.map.len() as i32;
 
-            while x > 0 && self.map[y][x - 1] == plot_char
-                && (boundary_y < 0 || boundary_y >= height || self.map[boundary_y as usize][x - 1] != plot_char)
-            {
-                x -= 1;
-            }
+                while x > 0 && self.map[y][x - 1] == plot_char
+                    && (boundary_y < 0 || boundary_y >= height || self.map[boundary_y as usize][x - 1] != plot_char)
+                {
+                    x -= 1;
+                }
 
-            boundary_coord = (x as i32, boundary_y);
-        }
+                (x as i32, boundary_y)
+            };
 
         sides.insert(((x as i32, y as i32), boundary_coord));
     }

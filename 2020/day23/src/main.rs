@@ -24,7 +24,7 @@ fn main() {
     // Create list where the index number points to the next number
     let mut next_number = vec![0; TOTAL_NUMBERS as usize];
     for i in input.windows(2) {
-        next_number[i[0] as usize] = i[1] as u32;
+        next_number[i[0] as usize] = i[1];
     }
 
     if PART2 {

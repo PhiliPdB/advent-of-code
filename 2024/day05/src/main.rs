@@ -97,7 +97,7 @@ fn main() {
     let part2_middle_page_sum: u32 = printing_orders.iter()
         .map(|order| {
             if !is_correctly_ordered(order, &is_before) {
-                let new_order = fix_ordering(&order, &is_before);
+                let new_order = fix_ordering(order, &is_before);
                 new_order[new_order.len() / 2]
             } else {
                 0

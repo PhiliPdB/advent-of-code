@@ -40,6 +40,7 @@ impl Ord for DijkstraNode {
     }
 }
 
+#[allow(clippy::ptr_arg)]
 fn heat_loss<const MAX_IN_SAME_DIRECTION: u32, const TURN_RADIUS: u32>(map: &Vec<Vec<u32>>) -> u32 {
     let mut heap = BinaryHeap::new();
     let mut visited = HashSet::new();
@@ -149,6 +150,7 @@ fn heat_loss<const MAX_IN_SAME_DIRECTION: u32, const TURN_RADIUS: u32>(map: &Vec
     unreachable!()
 }
 
+#[allow(clippy::ptr_arg)]
 fn turn<const TURN_RADIUS: u32>(map: &Vec<Vec<u32>>, (x, y): (usize, usize), heading: Heading, new_heading: Heading) -> Option<(u32, (usize, usize))> {
     let mut heat_loss = 0;
     let (mut x, mut y) = (x, y);

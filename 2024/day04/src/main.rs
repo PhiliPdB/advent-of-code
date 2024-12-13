@@ -1,4 +1,5 @@
 
+#[allow(clippy::ptr_arg)]
 fn xmas_count((x, y): (usize, usize), search_area: &Vec<Vec<char>>) -> u32 {
     let height = search_area.len();
     let width = search_area[0].len();
@@ -32,6 +33,7 @@ fn xmas_count((x, y): (usize, usize), search_area: &Vec<Vec<char>>) -> u32 {
         .count() as u32
 }
 
+#[allow(clippy::ptr_arg)]
 fn x_mas_count((x, y): (i32, i32), search_area: &Vec<Vec<char>>) -> u32 {
     let height = search_area.len() as i32;
     let width = search_area[0].len() as i32;

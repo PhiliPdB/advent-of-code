@@ -134,9 +134,7 @@ impl FromStr for Machines {
                     modules.push((Module::Broadcast, Vec::new()));
 
                     (modules.len() - 1, Module::Broadcast)
-                } else if module.starts_with('%') {
-                    let name = &module[1..];
-
+                } else if let Some(name) = module.strip_prefix('%') {
                     let index = match name_lookup.entry(name.to_owned()) {
                         Entry::Occupied(e) => *e.get(),
                         Entry::Vacant(e) => {
@@ -147,9 +145,7 @@ impl FromStr for Machines {
                     };
 
                     (index, Module::FlipFlop(State::Off))
-                } else if module.starts_with('&') {
-                    let name = &module[1..];
-
+                } else if let Some(name) = module.strip_prefix('&') {
                     let index = match name_lookup.entry(name.to_owned()) {
                         Entry::Occupied(e) => *e.get(),
                         Entry::Vacant(e) => {
