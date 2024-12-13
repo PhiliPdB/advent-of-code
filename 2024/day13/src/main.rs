@@ -9,7 +9,7 @@ use scan_fmt::parse::ScanError;
 
 #[derive(Debug)]
 struct ClawMachine {
-    price_location: (i64, i64),
+    prize_location: (i64, i64),
     button_a: (i64, i64),
     button_b: (i64, i64),
 }
@@ -26,8 +26,8 @@ impl ClawMachine {
             self.button_a.1 as f64, self.button_b.1 as f64;
         ];
         let position = vector![
-            self.price_location.0 as f64,
-            self.price_location.1 as f64
+            self.prize_location.0 as f64,
+            self.prize_location.1 as f64
         ];
         // Note: This system of equations has a unique solution
         //       finding this solution, means that is also minimal.
@@ -49,13 +49,18 @@ impl ClawMachine {
 
         // Check if the solution is valid
         if a_presses < 0 || b_presses < 0
-            || a_presses * self.button_a.0 + b_presses * self.button_b.0 != self.price_location.0
-            || a_presses * self.button_a.1 + b_presses * self.button_b.1 != self.price_location.1
+            || a_presses * self.button_a.0 + b_presses * self.button_b.0 != self.prize_location.0
+            || a_presses * self.button_a.1 + b_presses * self.button_b.1 != self.prize_location.1
         {
             return None;
         }
 
         Some(a_presses * Self::BUTTON_A_PRICE + b_presses * Self::BUTTON_B_PRICE)
+    }
+
+    pub fn update_prize_location(&mut self, constant: i64) {
+        self.prize_location.0 += constant;
+        self.prize_location.1 += constant;
     }
 }
 
@@ -67,10 +72,10 @@ impl FromStr for ClawMachine {
 
         let button_a = scan_fmt!(lines[0], "Button A: X+{}, Y+{}", i64, i64)?;
         let button_b = scan_fmt!(lines[1], "Button B: X+{}, Y+{}", i64, i64)?;
-        let price_location = scan_fmt!(lines[2], "Prize: X={}, Y={}", i64, i64)?;
+        let prize_location = scan_fmt!(lines[2], "Prize: X={}, Y={}", i64, i64)?;
 
         Ok(ClawMachine {
-            price_location,
+            prize_location,
             button_a,
             button_b,
         })
@@ -94,8 +99,7 @@ fn main() {
     // Part 2
     const PRIZE_LOCATION_ERROR: i64 = 10_000_000_000_000;
     for m in machines.iter_mut() {
-        m.price_location.0 += PRIZE_LOCATION_ERROR;
-        m.price_location.1 += PRIZE_LOCATION_ERROR;
+        m.update_prize_location(PRIZE_LOCATION_ERROR);
     }
 
     let part2_min_cost: i64 = machines.iter()
