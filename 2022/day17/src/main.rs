@@ -184,7 +184,7 @@ fn tower_size<const N: usize>(input: Vec<Direction>) -> usize {
                 }
 
                 // Values found by trial and error on my input... :(
-                if grid.len() == 0 && iteration % 5 == 0 && taken % input_len == 397 {
+                if grid.is_empty() && iteration % 5 == 0 && taken % input_len == 397 {
                     if repeat_start == 0 {
                         repeat_start = iteration;
                         tower_size_start = tower_size;

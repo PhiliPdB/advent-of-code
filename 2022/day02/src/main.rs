@@ -1,5 +1,6 @@
 
 fn score_part1(my_play: char, opponent: char) -> i32 {
+    #[allow(clippy::identity_op)]
     match (my_play, opponent) {
         ('X', 'A') => 3 + 1,
         ('X', 'B') => 0 + 1,
@@ -15,6 +16,7 @@ fn score_part1(my_play: char, opponent: char) -> i32 {
 }
 
 fn score_part2(my_play: char, opponent: char) -> i32 {
+    #[allow(clippy::identity_op)]
     match (my_play, opponent) {
         ('X', 'A') => 0 + 3,
         ('X', 'B') => 0 + 1,

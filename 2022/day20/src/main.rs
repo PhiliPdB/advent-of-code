@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-fn mix(numbers: &Vec<i64>, iterations: u32) -> i64 {
+fn mix(numbers: &[i64], iterations: u32) -> i64 {
     let mut positions: VecDeque<_> = (0..numbers.len()).collect();
 
     for _ in 0..iterations {
@@ -40,8 +40,8 @@ fn main() {
         .map(|l| l.parse::<i64>().unwrap())
         .collect();
 
-    println!("[Part 1] Sum of grove coordinate: {}", mix(&numbers, 1));
-    let numbers = numbers.into_iter().map(|n| n * 811589153).collect();
-    println!("[Part 2] Sum of grove coordinate: {}", mix(&numbers, 10));
+    println!("[Part 1] Sum of grove coordinate: {:14}", mix(&numbers, 1));
+    let numbers: Vec<_> = numbers.into_iter().map(|n| n * 811589153).collect();
+    println!("[Part 2] Sum of grove coordinate: {:14}", mix(&numbers, 10));
 }
 
