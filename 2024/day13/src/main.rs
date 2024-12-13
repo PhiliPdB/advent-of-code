@@ -30,7 +30,8 @@ impl ClawMachine {
             self.prize_location.1 as f64
         ];
         // Note: This system of equations has a unique solution
-        //       finding this solution, means that is also minimal.
+        //       finding this solution, means that we also found
+        //       the minimal solution.
 
         let det_a = velocity_matrix.determinant();
         let a_presses = Matrix2::from_columns(
