@@ -23,6 +23,7 @@ impl Category {
 enum Rule {
     LessThan(Category, u32, usize),
     GreaterThan(Category, u32, usize),
+    #[allow(clippy::enum_variant_names)]
     Rule(usize),
     Reject, Accept,
 }

@@ -28,6 +28,7 @@ impl PartialOrd for HeapItem {
 }
 
 
+#[allow(clippy::ptr_arg)]
 fn has_blizzard(
     (y, x): (i32, i32), t: u32,
     (width, height): (i32, i32),

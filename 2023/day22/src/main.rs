@@ -1,4 +1,5 @@
-use std::{str::FromStr, collections::{HashSet, VecDeque}};
+use std::collections::{HashSet, VecDeque};
+use std::str::FromStr;
 
 #[derive(Debug)]
 struct Brick {
@@ -29,6 +30,7 @@ impl FromStr for Brick {
     }
 }
 
+#[allow(clippy::ptr_arg)]
 fn build_brick_map(bricks: &[Brick]) -> Vec<Vec<Vec<Option<usize>>>> {
     let width = bricks.iter().map(|b| b.to.0).max().unwrap() as usize + 1;
     let height = bricks.iter().map(|b| b.to.1).max().unwrap() as usize + 1;
@@ -57,6 +59,7 @@ fn build_brick_map(bricks: &[Brick]) -> Vec<Vec<Vec<Option<usize>>>> {
     brick_map
 }
 
+#[allow(clippy::ptr_arg)]
 fn free_fall(bricks: &mut [Brick], brick_map: &mut Vec<Vec<Vec<Option<usize>>>>) {
     let mut changes = true;
     while changes {

@@ -1,4 +1,5 @@
-use std::{collections::{HashMap, HashSet}, str::FromStr};
+use std::str::FromStr;
+use std::collections::{HashMap, HashSet};
 
 use itertools::Itertools;
 
@@ -23,19 +24,21 @@ impl Map {
                 let dx = x2 as isize - x1 as isize;
                 let dy = y2 as isize - y1 as isize;
 
-                let mut min_i = if PART2 {
-                    isize::max(-(x1 as isize) / dx, -(y1 as isize) / dy)
-                } else {
-                    -1
-                };
-                let mut max_i = if PART2 {
-                    isize::min(
-                        (self.width - 1 - x1) as isize / dx,
-                        (self.height - 1 - y1) as isize / dy
-                    )
-                } else {
-                    2
-                };
+                let mut min_i =
+                    if PART2 {
+                        isize::max(-(x1 as isize) / dx, -(y1 as isize) / dy)
+                    } else {
+                        -1
+                    };
+                let mut max_i =
+                    if PART2 {
+                        isize::min(
+                            (self.width - 1 - x1) as isize / dx,
+                            (self.height - 1 - y1) as isize / dy
+                        )
+                    } else {
+                        2
+                    };
                 if max_i < min_i {
                     std::mem::swap(&mut min_i, &mut max_i);
                 }

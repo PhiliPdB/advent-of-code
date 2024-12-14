@@ -4,7 +4,7 @@ fn main() {
     let corrupt_instruction= include_str!("../input.txt");
 
     let part1_re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
-    let part1_mult_sum: i32 = part1_re.captures_iter(&corrupt_instruction)
+    let part1_mult_sum: i32 = part1_re.captures_iter(corrupt_instruction)
         .map(|c| c.extract())
         .map(|(_, [x, y])| {
             x.parse::<i32>().unwrap() * y.parse::<i32>().unwrap()
@@ -17,7 +17,7 @@ fn main() {
     let mut part2_mult_sum = 0;
 
     let part2_re = Regex::new(r"mul\((\d+),(\d+)\)|do\(\)|don't\(\)").unwrap();
-    for c in part2_re.captures_iter(&corrupt_instruction) {
+    for c in part2_re.captures_iter(corrupt_instruction) {
         let m = c.get(0).map_or("", |m| m.as_str());
         if m == "do()" {
             enabled = true;
