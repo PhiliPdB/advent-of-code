@@ -41,12 +41,8 @@ impl Rules {
 
     #[inline]
     fn match_chain<'a>(&self, rules: &[i32], input: &'a str) -> Option<&'a str> {
-        rules.iter().fold(Some(input), |acc, r| {
-            if let Some(i) = acc {
-                self.matches(*r, i)
-            } else {
-                None
-            }
+        rules.iter().try_fold(input, |acc, r| {
+            self.matches(*r, acc)
         })
     }
 }
@@ -59,11 +55,12 @@ impl FromStr for Rules {
         let mut map = HashMap::with_capacity(rules.len());
 
         for rule in rules {
-            let (id, rule) = rule.split_once(": ").ok_or("Invalid rule can't find ': '")?;
+            let (id, rule) = rule.split_once(": ")
+                .ok_or("Invalid rule can't find ': '")?;
             let id = id.parse().map_err(|_| "Can't parse id")?;
 
             let rule =
-                if rule.starts_with('\n') {
+                if rule.starts_with('\"') {
                     Rule::Character(rule.chars().nth(1).unwrap())
                 } else if rule.contains('|') {
                     let (rule1, rule2) = rule.split_once(" | ").unwrap();

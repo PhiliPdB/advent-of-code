@@ -45,6 +45,7 @@ fn has_blizzard(
         || ups[x as usize][(y as usize + t as usize) % height as usize]
 }
 
+#[allow(clippy::too_many_arguments, clippy::ptr_arg)]
 fn dijkstra(
     start: (i32, i32), goal: (i32, i32), start_time: u32,
     (width, height): (i32, i32),
@@ -99,10 +100,12 @@ fn main() {
 
     let mut lefts = Vec::new();
     let mut rights = Vec::new();
+    #[allow(clippy::needless_range_loop)]
     for y in 1..(height as usize + 1) {
         let mut left_row = Vec::new();
         let mut right_row = Vec::new();
 
+        #[allow(clippy::needless_range_loop)]
         for x in 1..(width as usize + 1) {
             match input[y][x] {
                 '<' => {
@@ -125,10 +128,12 @@ fn main() {
     }
     let mut ups = Vec::new();
     let mut downs = Vec::new();
+    #[allow(clippy::needless_range_loop)]
     for x in 1..(width as usize + 1) {
         let mut up_col = Vec::new();
         let mut down_col = Vec::new();
 
+        #[allow(clippy::needless_range_loop)]
         for y in 1..(height as usize + 1) {
             match input[y][x] {
                 '^' => {

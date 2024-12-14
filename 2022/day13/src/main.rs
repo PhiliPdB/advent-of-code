@@ -17,8 +17,8 @@ enum Packet {
 impl Packet {
     fn parse(line: &str) -> IResult<&str, Self> {
         alt((
-            map(delimited(tag("["), separated_list0(tag(","), Packet::parse), tag("]")), |p| Packet::List(p)),
-            map(i32, |n| Packet::Int(n))
+            map(delimited(tag("["), separated_list0(tag(","), Packet::parse), tag("]")), Packet::List),
+            map(i32, Packet::Int)
         ))(line)
     }
 
@@ -65,11 +65,6 @@ impl PartialOrd for Packet {
     }
 }
 
-impl Ord for Packet {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.partial_cmp(other).unwrap()
-    }
-}
 
 fn main() {
     let pairs: Vec<_> = include_str!("../input.txt")
@@ -107,7 +102,7 @@ fn main() {
     all_packets.push(divider_packets[0].clone());
     all_packets.push(divider_packets[1].clone());
 
-    all_packets.sort();
+    all_packets.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
     let decoder_key: usize = all_packets.iter()
         .enumerate()

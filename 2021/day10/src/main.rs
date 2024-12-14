@@ -65,13 +65,14 @@ fn main() {
     // Part 2
     let mut fix_missing_scores: Vec<_> = input.iter()
         // Only fix incomplete sequences and ignore the invalid ones.
-        .filter_map(|(s, remaining)| (*s == 0).then(|| {
+        .filter(|(s, _)| *s == 0)
+        .map(|(_, remaining)| {
             // Make sure to go in reverse order through the stack,'
             // as the last item needs to be closed first.
             remaining.iter().rev().fold(0, |acc, c| {
                 acc * 5 + insert_bracket_score(*c)
             })
-        }))
+        })
         .collect();
     fix_missing_scores.sort_unstable();
 

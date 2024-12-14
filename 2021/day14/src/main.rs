@@ -53,8 +53,8 @@ fn main() {
 
             acc
         })
-        .into_iter()
-        .map(|(_, v)| {
+        .into_values()
+        .map(|v| {
             // Each character is counted double (expect start and end characters), so divide by 2 and ceil.
             (v as f64 / 2_f64).ceil() as u64
         })

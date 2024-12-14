@@ -70,7 +70,8 @@ fn main() {
         allergen_ingredients.extend(i.iter().cloned());
     }
     let allergen_free_ingredients: i32 = all_ingredients.iter()
-        .filter_map(|(s, c)| (!allergen_ingredients.contains(s)).then(|| *c))
+        .filter(|(s, _)| !allergen_ingredients.contains(*s))
+        .map(|(_, c)| *c)
         .sum();
 
     println!("Total allergen-free ingredients: {}", allergen_free_ingredients);

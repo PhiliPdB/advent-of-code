@@ -235,7 +235,11 @@ fn main() {
         })
         .collect();
 
-    let mut img_map: Vec<Vec<TileSpace>> = vec![Vec::with_capacity(IMAGE_SIZE * (TILE_BORDER - 2)); IMAGE_SIZE * (TILE_BORDER - 2)];
+    let mut img_map: Vec<Vec<TileSpace>> =
+        (0..IMAGE_SIZE * (TILE_BORDER - 2)).map(|_| {
+            Vec::with_capacity(IMAGE_SIZE * (TILE_BORDER - 2))
+        })
+        .collect();
 
     // Rotate each tile in the correct orientation and fill in the image map
     for y in 0..IMAGE_SIZE {

@@ -7,7 +7,7 @@ pub trait Map {
     fn distance_to_room(hallway_index: usize, room_index: usize) -> u32 {
         debug_assert!(room_index < 4);
 
-        (hallway_index as i32 - ((room_index + 1) * 2) as i32).abs() as u32
+        (hallway_index as i32 - ((room_index + 1) * 2) as i32).unsigned_abs()
     }
 
     fn is_blocking(&self, hallway_index: usize, room_index: usize) -> bool;

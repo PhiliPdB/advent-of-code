@@ -250,7 +250,7 @@ impl<const N: usize> Vault<N> {
                 }
 
                 (self.map[ny][nx] != Space::Wall)
-                    .then(|| (nx, ny))
+                    .then_some((nx, ny))
             })
             .collect()
     }

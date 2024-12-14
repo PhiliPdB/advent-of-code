@@ -32,8 +32,8 @@ fn simulate(start_x: i32, start_y: i32) -> (bool, i32) {
             max_y = current_y;
         }
 
-        if TARGET_X_MIN <= current_x && current_x <= TARGET_X_MAX
-            && TARGET_Y_MIN <= current_y && current_y <= TARGET_Y_MAX
+        if (TARGET_X_MIN..=TARGET_X_MAX).contains(&current_x)
+            && (TARGET_Y_MIN..=TARGET_Y_MAX).contains(&current_y)
         {
             hit_target = true;
             break;

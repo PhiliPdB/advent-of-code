@@ -34,6 +34,7 @@ impl LineSegment {
         };
 
         // Check if we need to return diagonal points
+        #[allow(clippy::nonminimal_bool)]
         if !diagonal && !(x_increment == 0 || y_increment == 0) {
             return coordinates;
         }
