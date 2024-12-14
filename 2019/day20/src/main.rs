@@ -173,7 +173,9 @@ impl FromStr for Maze {
                         };
 
                     if let Some(portal_name) = portal_name {
-                        portal_lookup.entry(portal_name.clone()).or_insert_with(Vec::new).push((y, x));
+                        portal_lookup.entry(portal_name.clone())
+                            .or_default()
+                            .push((y, x));
 
                         space = Space::Portal(portal_name);
                     }
@@ -269,7 +271,8 @@ impl FromStr for Maze {
     }
 }
 
-fn bfs(map: &[Vec<Space>], start: (usize, usize), end: (usize, usize)) -> Option<u32> {
+#[allow(clippy::ptr_arg)]
+fn bfs(map: &Vec<Vec<Space>>, start: (usize, usize), end: (usize, usize)) -> Option<u32> {
     // Perform BFS to find out the shortest path
 
     let height = map.len();

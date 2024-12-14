@@ -1,3 +1,5 @@
+#![allow(clippy::needless_range_loop)]
+
 fn main() {
     let heights: Vec<_> = include_str!("../input.txt")
         .lines()

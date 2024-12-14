@@ -86,6 +86,7 @@ fn main() {
                 let y_max = cmp::max(y1, y2);
 
                 // Move y
+                #[allow(clippy::needless_range_loop)]
                 for y in y_min..=y_max {
                     grid[y][x1 - X_START] = Space::Rock;
                 }
@@ -94,6 +95,7 @@ fn main() {
                 let x_max = cmp::max(x1, x2);
 
                 // Move x
+                #[allow(clippy::needless_range_loop)]
                 for x in x_min..=x_max {
                     grid[y1][x - X_START] = Space::Rock;
                 }

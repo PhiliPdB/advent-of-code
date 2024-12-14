@@ -108,12 +108,13 @@ fn main() {
     monkey_inspections.sort_by(|a, b| b.cmp(a));
     println!("[Part 1] Monkey business: {}", monkey_inspections[0] * monkey_inspections[1]);
 
+
     monkey_inspections = vec![0_u64; input_monkeys.len()];
     monkeys = input_monkeys.clone();
     let tests: Vec<_> = monkeys.iter().map(|m| m.test).collect();
     let mut lcm = tests[0];
-    for i in 1..tests.len() {
-        lcm = lcm.lcm(&tests[i]);
+    for test in tests.iter().skip(1) {
+        lcm = lcm.lcm(test);
     }
 
     let ptr = monkeys.as_mut_ptr();

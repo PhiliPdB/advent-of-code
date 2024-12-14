@@ -153,6 +153,7 @@ fn main() {
                                     }
                                 },
                                 Facing::South => {
+                                    #[allow(clippy::needless_range_loop)]
                                     for y in 0..grid.len() {
                                         match grid[y][next.0] {
                                             Tile::Open => {

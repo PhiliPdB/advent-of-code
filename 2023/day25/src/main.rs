@@ -32,6 +32,7 @@ impl Wiring {
 
         let mut visited = vec![false; self.adjacency_list.len()];
         while let Some(n) = queue.pop() {
+            #[allow(clippy::needless_range_loop)]
             for i in 0..self.adjacency_list.len() {
                 if graph[n][i] > 0 && !visited[i] {
                     visited[i] = true;

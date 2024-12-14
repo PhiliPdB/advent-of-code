@@ -39,11 +39,8 @@ fn main() {
 
     // Part 2
     let seat = input.windows(2)
-        .filter_map(|w| if w[0] + 2 == w[1] {
-            Some(w[0] + 1)
-        } else {
-            None
-        })
+        .filter(|w| w[0] + 2 == w[1])
+        .map(|w| w[0] + 1)
         .collect::<Vec<_>>()[0];
     println!("Seat id: {}", seat);
 }

@@ -1,10 +1,9 @@
 use std::iter;
 
 
-const BASE_PATTERN: [i32; 4] = [0, 1, 0, -1];
-const PHASES: u32 = 100;
-
 fn fft_phase(input: &[i32]) -> Vec<i32> {
+    const BASE_PATTERN: [i32; 4] = [0, 1, 0, -1];
+
     let mut output = Vec::with_capacity(input.len());
 
     for i in 1..(input.len() + 1) {
@@ -37,6 +36,8 @@ fn main() {
         .chars()
         .map(|c| c.to_digit(10).unwrap() as i32)
         .collect();
+    const PHASES: u32 = 100;
+
 
     // Part 1
 
@@ -45,8 +46,9 @@ fn main() {
         part1_fft = fft_phase(&part1_fft);
     }
 
+    print!("[Part 1] First 8 digits: ");
     for d in part1_fft.iter().take(8) {
-        print!("{}", d);
+        print!("{d}");
     }
     println!();
 
@@ -64,8 +66,9 @@ fn main() {
         fft_fast(&mut input[offset..]);
     }
 
-    for d in input.iter().skip(offset as usize).take(8) {
-        print!("{}", d);
+    print!("[Part 2] First 8 digits: ");
+    for d in input.iter().skip(offset).take(8) {
+        print!("{d}");
     }
     println!();
 }

@@ -24,7 +24,7 @@ impl Instruction {
                 if *n >= 0 {
                     deck.rotate_left(*n as usize);
                 } else {
-                    deck.rotate_right(n.abs() as usize);
+                    deck.rotate_right(n.unsigned_abs() as usize);
                 }
             },
             Instruction::DealIncrement(n) => {
@@ -46,8 +46,8 @@ impl Instruction {
     pub fn parse(line: &str) -> IResult<&str, Self> {
         alt((
             map(tag("deal into new stack"), |_| Instruction::DealNew),
-            map(preceded(tag("cut "), i128), |n| Instruction::Cut(n)),
-            map(preceded(tag("deal with increment "), i128), |n| Instruction::DealIncrement(n)),
+            map(preceded(tag("cut "), i128), Instruction::Cut),
+            map(preceded(tag("deal with increment "), i128), Instruction::DealIncrement),
         ))(line)
     }
 }

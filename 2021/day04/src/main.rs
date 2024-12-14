@@ -33,7 +33,8 @@ fn main() {
         // Filter out the non-bingos, while keeping track of the board indeces with a bingo.
         let bingo_indices: Vec<_> = bingos.iter()
             .enumerate()
-            .filter_map(|(i, &b)| b.then(|| i))
+            .filter(|(_, &b)| b)
+            .map(|(i, _)| i)
             .collect();
 
         // Print score for each board that has a bingo
@@ -46,6 +47,6 @@ fn main() {
     }
 
 
-    println!("Best board score:  {}", bingo_scores[0]);
-    println!("Worst board score: {}", bingo_scores[bingo_scores.len() - 1]);
+    println!("[Part 1] Best board score:  {}", bingo_scores[0]);
+    println!("[Part 2] Worst board score: {}", bingo_scores[bingo_scores.len() - 1]);
 }

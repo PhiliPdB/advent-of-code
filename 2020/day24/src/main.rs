@@ -96,7 +96,10 @@ fn main() {
                     }
 
                     // Check white neighbours, as white tiles can only be flipped if they have at least one black neighbour.
-                    for c in neighbours.iter().filter_map(|(c, t)| (**t == Tile::White).then(|| c)) {
+                    for c in neighbours.iter()
+                        .filter(|(_, t)| **t == Tile::White)
+                        .map(|(c, _)| c)
+                    {
                         let black_neighbours = get_neighbours(*c).into_iter()
                             .filter(|c| *flipped_tiles.get(c).unwrap_or(&Tile::White) == Tile::Black)
                             .count();

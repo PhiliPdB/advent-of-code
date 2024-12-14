@@ -36,7 +36,8 @@ fn main() {
         .flat_map(|(y, row)| {
             row.iter()
                 .enumerate()
-                .filter_map(|(x, s)| (*s == Square::Asteroid).then(|| (y, x)))
+                .filter(|(_, s)| **s == Square::Asteroid)
+                .map(|(x, _)| (y, x))
                 .collect::<Vec<_>>()
         })
         .collect();
@@ -73,7 +74,9 @@ fn main() {
     let most_asteroids = detected.iter()
         .enumerate()
         .map(|(y, row)| {
-            let (x, max) = row.iter().enumerate().max_by(|(_, a), (_, b)| a.cmp(b)).unwrap();
+            let (x, max) = row.iter().enumerate()
+                .max_by(|(_, a), (_, b)| a.cmp(b))
+                .unwrap();
             ((y, x), max)
         })
         .max_by(|(_, a), (_, b)| a.cmp(b)).unwrap();

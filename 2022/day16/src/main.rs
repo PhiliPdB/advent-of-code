@@ -30,6 +30,7 @@ impl StackItem {
 }
 
 
+#[allow(clippy::ptr_arg)]
 fn get_distances(start_node: usize, flow_rates: &Vec<u32>, adjacency_list: &Vec<Vec<usize>>) -> Vec<Neighbour> {
     let mut distances = Vec::new();
 
