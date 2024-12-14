@@ -95,7 +95,7 @@ impl FromStr for FileSystem {
     type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let compact_repesentation: Vec<_> = s
+        let compact_representation: Vec<_> = s
             .chars()
             .map(|c| c.to_digit(10).unwrap())
             .collect();
@@ -104,10 +104,8 @@ impl FromStr for FileSystem {
         let mut files = Vec::new();
 
         let mut i = 0;
-        let mut id = 0;
-        for c in compact_repesentation.chunks(2) {
-            files.push((i, c[0], id));
-            id += 1;
+        for (id, c) in compact_representation.chunks(2).enumerate() {
+            files.push((i, c[0], id as u32));
             i += c[0] as usize;
 
             if c.len() > 1 {
