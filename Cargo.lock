@@ -633,6 +633,14 @@ name = "day14_2023"
 version = "0.1.0"
 
 [[package]]
+name = "day14_2024"
+version = "0.1.0"
+dependencies = [
+ "hashbrown 0.15.2",
+ "scan_fmt",
+]
+
+[[package]]
 name = "day15_2019"
 version = "0.1.0"
 
