@@ -1,4 +1,5 @@
 use std::str::FromStr;
+use std::fmt::Display;
 
 use map::Map;
 
@@ -19,6 +20,18 @@ impl Space {
             '#' => Space::Wall,
             'O' => Space::Box,
             _ => panic!("Invalid space character: {}", c),
+        }
+    }
+}
+
+impl Display for Space {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Space::Empty => write!(f, "."),
+            Space::Wall => write!(f, "#"),
+            Space::Box => write!(f, "O"),
+            Space::BoxOpen => write!(f, "["),
+            Space::BoxClose => write!(f, "]"),
         }
     }
 }
@@ -81,5 +94,4 @@ fn main() {
         part2_map.move_robot(m);
     }
     println!("[Part 2] Box GPS sum: {}", part2_map.box_gps_sum());
-
 }
