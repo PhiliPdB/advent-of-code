@@ -1,4 +1,5 @@
 use std::str::FromStr;
+use std::fmt::{Display, Formatter};
 
 use crate::{Move, Space};
 
@@ -217,5 +218,22 @@ impl FromStr for Map {
         let robot_position = robot_position.ok_or("No robot position found")?;
 
         Ok(Map { map, robot_position })
+    }
+}
+
+impl Display for Map {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        for (y, row) in self.map.iter().enumerate() {
+            for (x, &space) in row.iter().enumerate() {
+                if (x, y) == self.robot_position {
+                    write!(f, "@")?;
+                } else {
+                    write!(f, "{}", space)?;
+                }
+            }
+            writeln!(f)?;
+        }
+
+        Ok(())
     }
 }
