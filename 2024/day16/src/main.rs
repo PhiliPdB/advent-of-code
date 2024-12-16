@@ -160,7 +160,7 @@ impl Map {
 
         // Backtrack to find all the best paths
         let mut path_tiles = HashSet::new();
-        let mut queue = vec![((self.end, heading))];
+        let mut queue = vec![(self.end, heading)];
 
         while let Some(((px, py), heading)) = queue.pop() {
             // Add to path

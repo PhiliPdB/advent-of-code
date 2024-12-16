@@ -90,6 +90,7 @@ impl Map {
 
         let mut new_map = vec![vec![Space::Empty; width * 2]; height];
 
+        #[allow(clippy::needless_range_loop)]
         for y in 0..height {
             for x in 0..width {
                 if self.map[y][x] == Space::Box {
