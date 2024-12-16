@@ -1,8 +1,6 @@
 use std::str::FromStr;
-use std::collections::BinaryHeap;
+use std::collections::{BinaryHeap, HashSet};
 use std::cmp::Ordering;
-
-use hashbrown::{HashMap, HashSet};
 
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -59,7 +57,7 @@ struct HeapItem {
     cost: u32,
     position: (usize, usize),
     heading: Heading,
-    path: Vec<(usize, usize)>,
+    previous_node: ((usize, usize), Heading),
 }
 
 impl PartialOrd for HeapItem {
@@ -89,47 +87,47 @@ impl Map {
             cost: 0,
             position: self.start,
             heading: Heading::East,
-            path: vec![self.start],
+            previous_node: (self.start, Heading::East),
         });
 
-        let mut visited = HashMap::new();
 
-        let mut best_cost = u32::MAX;
-        let mut path_tiles = HashSet::new();
+        let mut best_cost = vec![vec![vec![u32::MAX; 4]; self.map[0].len()]; self.map.len()];
+        let mut predecessors = vec![vec![vec![Vec::new(); 4]; self.map[0].len()]; self.map.len()];
 
-
-        while let Some(current) = queue.pop() {
-            let (px, py) = current.position;
-
-            if current.cost > best_cost {
-                continue;
+        while let Some(HeapItem {
+            cost,
+            position: (px, py),
+            heading,
+            previous_node
+        }) = queue.pop() {
+            // Check if we have already found a better path to this node
+            match cost.cmp(&best_cost[py][px][heading as usize]) {
+                Ordering::Less => { // Found a better path
+                    // Reset the predecessors list
+                    let p = &mut predecessors[py][px][heading as usize];
+                    p.clear();
+                    p.push(previous_node);
+                    // Save the newly found best cost
+                    best_cost[py][px][heading as usize] = cost;
+                },
+                Ordering::Equal => { // Found an equal path
+                    // Add the predecessor to the list
+                    predecessors[py][px][heading as usize].push(previous_node);
+                    continue;
+                },
+                Ordering::Greater => {
+                    continue;
+                },
             }
 
             if (px, py) == self.end {
-                if current.cost <= best_cost {
-                    best_cost = best_cost.min(current.cost);
-                    for t in &current.path {
-                        path_tiles.insert(*t);
-                    }
-
-                    continue;
-                } else {
-                    break;
-                }
+                continue;
             }
 
-            if let Some(&visited_cost) = visited.get(&((px, py), current.heading)) {
-                if visited_cost < current.cost {
-                    continue;
-                }
-            }
-            visited.insert(((px, py), current.heading), current.cost);
-
-
-            for h in [
-                current.heading,
-                current.heading.turn_left(),
-                current.heading.turn_right(),
+            for (h, heading_cost) in [
+                (heading, 0),
+                (heading.turn_left(), 1_000),
+                (heading.turn_right(), 1_000),
             ] {
                 let (dx, dy) = h.direction();
                 let (nx, ny) = (px as isize + dx, py as isize + dy);
@@ -144,25 +142,36 @@ impl Map {
                     continue;
                 }
 
-                let mut new_path = current.path.clone();
-                new_path.push((nx, ny));
-
-                let heading_cost =
-                    if h == current.heading {
-                        0
-                    } else {
-                        1_000
-                    };
                 queue.push(HeapItem {
-                    cost: current.cost + 1 + heading_cost,
+                    cost: cost + 1 + heading_cost,
                     position: (nx, ny),
                     heading: h,
-                    path: new_path,
+                    previous_node: ((px, py), heading),
                 });
             }
         }
+        // Clear the predecessors stored at the start to avoid an infinite loop.
+        predecessors[self.start.1][self.start.0][Heading::East as usize].clear();
 
-        (best_cost, path_tiles)
+        let (heading, &shortest_path) = best_cost[self.end.1][self.end.0].iter()
+            .enumerate()
+            .min_by(|(_, a), (_, b)| a.cmp(b))
+            .unwrap();
+
+        // Backtrack to find all the best paths
+        let mut path_tiles = HashSet::new();
+        let mut queue = vec![((self.end, heading))];
+
+        while let Some(((px, py), heading)) = queue.pop() {
+            // Add to path
+            path_tiles.insert((px, py));
+            // List predecessors as items to visit
+            for &predecessor in &predecessors[py][px][heading] {
+                queue.push((predecessor.0, predecessor.1 as usize));
+            }
+        }
+
+        (shortest_path, path_tiles)
     }
 }
 
