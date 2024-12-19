@@ -777,6 +777,13 @@ name = "day19_2023"
 version = "0.1.0"
 
 [[package]]
+name = "day19_2024"
+version = "0.1.0"
+dependencies = [
+ "regex",
+]
+
+[[package]]
 name = "day20_2019"
 version = "0.1.0"
 
