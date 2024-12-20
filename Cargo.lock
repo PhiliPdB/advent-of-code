@@ -807,6 +807,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "day20_2024"
+version = "0.1.0"
+dependencies = [
+ "hashbrown 0.15.2",
+]
+
+[[package]]
 name = "day21_2019"
 version = "0.1.0"
 
