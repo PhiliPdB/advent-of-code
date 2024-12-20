@@ -1,8 +1,6 @@
 use std::str::FromStr;
 use std::collections::VecDeque;
 
-use hashbrown::HashSet;
-
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Tile {
@@ -85,58 +83,18 @@ impl RaceTrack {
     }
 
     fn cheating_options(&self, shortest_path: &[(usize, usize)], cheat_length: usize, min_time_save: usize) -> u64 {
-        let path_length = shortest_path.len() - 1;
-
-        let mut distance_to_end = vec![vec![path_length + 10; self.map[0].len()]; self.map.len()];
-        for (i, (x, y)) in shortest_path.iter().enumerate() {
-            distance_to_end[*y][*x] = path_length - i;
-        }
-
         let mut cheats = 0;
-        // Find cheating options
-        for (step, &(x, y)) in shortest_path.iter().enumerate() {
-            let current_distance = path_length - step;
-            if current_distance < min_time_save {
-                break;
-            }
 
-            let mut queue = VecDeque::new();
-            queue.push_back(((x, y), 0));
-            let mut visited = HashSet::new();
-
-            while let Some(((x, y), distance)) = queue.pop_front() {
-                if distance > cheat_length {
+        for (i, &(x, y)) in shortest_path.iter().enumerate() {
+            for (j, &(nx, ny)) in shortest_path.iter().enumerate().skip(i + min_time_save) {
+                let cheat_distance = usize::abs_diff(x, nx) + usize::abs_diff(y, ny);
+                if cheat_distance > cheat_length {
                     continue;
                 }
 
-                if !visited.insert((x, y)) {
-                    continue;
-                }
-
-                // Don't compare lengths when not back at a path
-                if self.map[y][x] == Tile::Empty {
-                    let new_distance = distance_to_end[y][x] + distance;
-                    if current_distance > new_distance && current_distance - new_distance >= min_time_save {
-                        cheats += 1;
-                    }
-                }
-
-                for (dx, dy) in [(0, 1), (1, 0), (0, -1), (-1, 0)] {
-                    let new_x = x as i32 + dx;
-                    let new_y = y as i32 + dy;
-
-                    if new_x < 0 || new_x >= self.map[0].len() as i32 {
-                        continue;
-                    }
-                    if new_y < 0 || new_y >= self.map.len() as i32 {
-                        continue;
-                    }
-
-                    let new_x = new_x as usize;
-                    let new_y = new_y as usize;
-
-                    // Add to the queue
-                    queue.push_back(((new_x, new_y), distance + 1));
+                let saved = j - (i + cheat_distance);
+                if saved >= min_time_save {
+                    cheats += 1;
                 }
             }
         }
