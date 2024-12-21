@@ -11,19 +11,19 @@ pub trait Keypad {
         let (start_x, start_y) = Self::button_position(start);
         let (end_x, end_y) = Self::button_position(end);
 
-        let delta_x = end_x as i32 - start_x as i32;
-        let delta_y = end_y as i32 - start_y as i32;
+        let delta_x = end_x as isize - start_x as isize;
+        let delta_y = end_y as isize - start_y as isize;
 
         let mut sequence = vec![];
         if delta_x > 0 {
             sequence.extend(vec!['>'; delta_x as usize]);
         } else {
-            sequence.extend(vec!['<'; delta_x.abs() as usize]);
+            sequence.extend(vec!['<'; delta_x.unsigned_abs()]);
         }
         if delta_y > 0 {
             sequence.extend(vec!['v'; delta_y as usize]);
         } else {
-            sequence.extend(vec!['^'; delta_y.abs() as usize]);
+            sequence.extend(vec!['^'; delta_y.unsigned_abs()]);
         }
 
         let mut valid_sequences = Vec::new();

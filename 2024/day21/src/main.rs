@@ -5,9 +5,9 @@ use keypad::{DirectionalKeypad, Keypad, NumericKeypad};
 mod keypad;
 
 
-fn shortest_path_length<'a>(
+fn shortest_path_length(
     cache: &mut HashMap<(Vec<char>, u32, u32), u64>,
-    sequence: &'a [char], depth: u32, max_depth: u32
+    sequence: &[char], depth: u32, max_depth: u32
 ) -> u64 {
     let key = (sequence.to_vec(), depth, max_depth);
     if let Some(&length) = cache.get(&key) {
