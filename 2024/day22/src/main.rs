@@ -56,25 +56,20 @@ fn main() {
     for secret_number in &secret_numbers {
         let mut result = *secret_number;
 
-        let mut history = [0; 4];
-        for i in 0..SECRET_NUMBERS {
+        let mut history = Vec::with_capacity(SECRET_NUMBERS as usize);
+        for _ in 0..SECRET_NUMBERS {
             let next_result = next_number(result);
             let price = next_result % 10;
             let price_diff = price as i32 - (result % 10) as i32;
 
-            if i >= 3 {
-                history[3] = price_diff;
-
-                let key = to_int(&history);
+            history.push(price_diff);
+            if history.len() >= 4 {
+                let key = to_int(&history[history.len() - 4..]);
                 let is_seen = unsafe { seen.get_unchecked_mut(key) };
                 if !*is_seen {
                     sequence_profit_map[key] += price;
                     *is_seen = true;
                 }
-
-                history.rotate_left(1);
-            } else {
-                history[i as usize] = price_diff;
             }
             result = next_result;
         }
