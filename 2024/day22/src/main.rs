@@ -51,12 +51,13 @@ fn main() {
     let mut sequence_profit_map = vec![0; MAX_KEYS];
     // Keep track of which sequences we have seen in an iteration (as only the first occurrence counts)
     let mut seen = vec![false; MAX_KEYS];
+    let mut history = Vec::with_capacity(SECRET_NUMBERS as usize);
 
     let mut part1_sum = 0;
     for secret_number in &secret_numbers {
         let mut result = *secret_number;
+        history.clear();
 
-        let mut history = Vec::with_capacity(SECRET_NUMBERS as usize);
         for _ in 0..SECRET_NUMBERS {
             let next_result = next_number(result);
             let price = next_result % 10;
