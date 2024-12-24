@@ -16,12 +16,12 @@ impl Graph {
 
         for n1 in 0..self.node_names.len() {
             for &n2 in self.adjacency_list[n1].iter() {
-                if n1 <=  n2 {
+                if n2 <= n1 {
                     continue;
                 }
 
                 for &n3 in self.adjacency_list[n2].iter() {
-                    if n2 <= n3 {
+                    if n3 <= n2 {
                         continue;
                     }
 
