@@ -116,7 +116,13 @@ fn main() {
     // If not, mark the incorrect wires to be swapped
 
     let mut to_swap = HashSet::new();
-    let mut carry = "mqs";
+    let mut carry = rules.iter()
+        .find(|r| {
+            ((r.left_input == "x00" && r.right_input == "y00") || (r.left_input == "y00" && r.right_input == "x00"))
+                && r.operator == Operator::And
+        })
+        .unwrap()
+        .output;
     for i in 1..45 {
         let x = format!("x{i:02}");
         let y = format!("y{i:02}");
