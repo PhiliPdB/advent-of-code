@@ -1,8 +1,9 @@
 [Bb]uild/
 lib/
 
-# Created by https://www.toptal.com/developers/gitignore/api/c++,rust,haskell,visualstudio,visualstudiocode,cmake
-# Edit at https://www.toptal.com/developers/gitignore?templates=c++,rust,haskell,visualstudio,visualstudiocode,cmake
+### direnv ###
+.direnv
+.envrc
 
 ### C++ ###
 # Prerequisites
