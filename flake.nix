@@ -19,18 +19,28 @@
           overlays = [ (import rust-overlay) ];
         };
 
-        devShells.rust = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            (rust-bin.stable.latest.default.override {
-              extensions = [
-                "clippy"
-                "rust-analyzer"
-              ];
-            })
+        devShells =
+          let
+            globalPackages = with pkgs; [
+              # Hyperfine for performance benchmarking
+              hyperfine
+            ];
+          in {
+            rust = pkgs.mkShell {
+              name = "AoC-rust";
 
-            hyperfine
-          ];
-        };
+              buildInputs = with pkgs; [
+                (rust-bin.stable.latest.default.override {
+                  extensions = [
+                    "clippy"
+                    "rust-analyzer"
+                  ];
+                })
+              ];
+
+              packages = globalPackages;
+            };
+          };
       };
     };
 }
