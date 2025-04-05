@@ -17,6 +17,11 @@
         _module.args.pkgs = import nixpkgs {
           inherit system;
           overlays = [ (import rust-overlay) ];
+
+          config.permittedInsecurePackages = [
+            "dotnet-sdk-6.0.428" # Year 2016 is written with dotnet 6
+            "dotnet-sdk-7.0.410" # Year 2017 is written with dotnet 7
+          ];
         };
 
         devShells =
@@ -26,6 +31,36 @@
               hyperfine
             ];
           in {
+            dotnet = pkgs.mkShell rec {
+              name = "AoC-dotnet";
+              dotnetPkg = (with pkgs.dotnetCorePackages; combinePackages [
+                sdk_6_0
+                sdk_7_0
+              ]);
+
+              dependencies = with pkgs; [
+                zlib
+                zlib.dev
+                icu
+                openssl
+
+                dotnetPkg
+              ];
+
+              NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath ([
+                pkgs.stdenv.cc.cc
+              ] ++ dependencies);
+              NIX_LD = "${pkgs.stdenv.cc.libc_bin}/bin/ld.so";
+
+              nativeBuildInputs = dependencies;
+
+              packages = globalPackages;
+
+              shellHook = ''
+                DOTNET_ROOT="${dotnetPkg}";
+              '';
+            };
+
             rust = pkgs.mkShell {
               name = "AoC-rust";
 
