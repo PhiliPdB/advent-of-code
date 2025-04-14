@@ -20,7 +20,7 @@
 
           config.permittedInsecurePackages = [
             "dotnet-sdk-6.0.428" # Year 2016 is written with dotnet 6
-            "dotnet-sdk-7.0.410" # Year 2017 is written with dotnet 7
+            "dotnet-sdk-7.0.410" # Year 2015 is written with dotnet 7
           ];
         };
 
