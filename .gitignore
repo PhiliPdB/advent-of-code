@@ -1,3 +1,7 @@
+# Ignore puzzle inputs
+*input.txt
+
+
 [Bb]uild/
 lib/
 
