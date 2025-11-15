@@ -36,8 +36,12 @@
             let
               globalPackages = with pkgs; [
                 aoc-cli
+
                 # For performance benchmarking
                 hyperfine
+
+                # Script shortcuts
+                (pkgs.writeScriptBin "di" (builtins.readFile ./scripts/download_current_day_puzzle_input.sh))
               ];
             in
             {
