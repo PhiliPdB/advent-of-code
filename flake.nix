@@ -92,6 +92,7 @@
                 packages =
                   with pkgs;
                   [
+                    cargo-expand
                     cargo-show-asm
                   ]
                   ++ globalPackages;
