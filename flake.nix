@@ -35,7 +35,8 @@
           devShells =
             let
               globalPackages = with pkgs; [
-                # Hyperfine for performance benchmarking
+                aoc-cli
+                # For performance benchmarking
                 hyperfine
               ];
             in
