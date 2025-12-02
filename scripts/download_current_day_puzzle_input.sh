@@ -1,5 +1,4 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i bash -p aoc-cli
+#! /usr/bin/env bash
 
 # Get current year and current day
 year=$(date +%Y)
