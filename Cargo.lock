@@ -459,6 +459,10 @@ name = "day07_2024"
 version = "0.1.0"
 
 [[package]]
+name = "day07_2025"
+version = "0.1.0"
+
+[[package]]
 name = "day08_2019"
 version = "0.1.0"
 dependencies = [
