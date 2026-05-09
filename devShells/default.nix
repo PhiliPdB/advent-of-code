@@ -2,6 +2,7 @@
   imports = [
     ./dotnet.nix
     ./rust.nix
+    ./zig.nix
   ];
 
   perSystem =
