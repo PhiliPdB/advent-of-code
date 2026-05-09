@@ -19,8 +19,12 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = nixpkgs.lib.systems.flakeExposed;
 
+      imports = [
+        ./devShells
+      ];
+
       perSystem =
-        { system, pkgs, ... }:
+        { system, ... }:
         {
           _module.args.pkgs = import nixpkgs {
             inherit system;
@@ -31,88 +35,6 @@
               "dotnet-sdk-7.0.410" # Year 2015 is written with dotnet 7
             ];
           };
-
-          devShells =
-            let
-              globalPackages = with pkgs; [
-                aoc-cli
-
-                # For performance benchmarking
-                hyperfine
-
-                # Script shortcuts
-                (pkgs.writeScriptBin "di" (builtins.readFile ./scripts/download_current_day_puzzle_input.sh))
-              ];
-            in
-            {
-              dotnet = pkgs.mkShell rec {
-                name = "AoC-dotnet";
-                dotnetPkg = (
-                  with pkgs.dotnetCorePackages;
-                  combinePackages [
-                    sdk_6_0
-                    sdk_7_0
-                  ]
-                );
-
-                dependencies = with pkgs; [
-                  zlib
-                  zlib.dev
-                  icu
-                  openssl
-
-                  dotnetPkg
-                ];
-
-                NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (
-                  [
-                    pkgs.stdenv.cc.cc
-                  ]
-                  ++ dependencies
-                );
-                NIX_LD = "${pkgs.stdenv.cc.libc_bin}/bin/ld.so";
-
-                nativeBuildInputs = dependencies;
-
-                packages = globalPackages;
-
-                shellHook = ''
-                  DOTNET_ROOT="${dotnetPkg}";
-                '';
-              };
-
-              rust = pkgs.mkShell {
-                name = "AoC-rust";
-
-                nativeBuildInputs = with pkgs; [
-                  cmake
-                  rustPlatform.bindgenHook
-                  pkg-config
-                ];
-
-                buildInputs = with pkgs; [
-                  (rust-bin.stable.latest.default.override {
-                    extensions = [
-                      "clippy"
-                      "rust-analyzer"
-                      "rust-src"
-                    ];
-                  })
-                  libclang.lib
-                ];
-
-                # Needed if using bindgen to wrap C libraries in Rust
-                LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
-
-                packages =
-                  with pkgs;
-                  [
-                    cargo-expand
-                    cargo-show-asm
-                  ]
-                  ++ globalPackages;
-              };
-            };
         };
     };
 }
