@@ -915,5 +915,13 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# End of https://www.toptal.com/developers/gitignore/api/csharp
+### zig ###
+# Zig programming language
+
+zig-cache/
+.zig-cache/
+zig-out/
+build/
+build-*/
+docgen_tmp/
 
