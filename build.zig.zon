@@ -18,5 +18,8 @@
         "build.zig",
         "build.zig.zon",
         "README.md",
+
+        // Singular days solved with Zig
+        "2017/day23",
     },
 }
