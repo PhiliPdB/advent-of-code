@@ -1,4 +1,5 @@
-#include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -20,6 +21,14 @@ struct Instruction {
 
     bool second_is_register;
     std::int64_t second_argument;
+
+    explicit Instruction(Operation op, bool first_is_reg, std::int64_t first_arg, bool second_is_reg, std::int64_t second_arg) :
+        operation{ op },
+        first_is_register{ first_is_reg },
+        first_argument{ first_arg },
+        second_is_register{ second_is_reg },
+        second_argument{ second_arg } {
+    }
 
     constexpr std::int64_t first_argument_value(std::unordered_map<char, std::int64_t>& registers) const {
         if (first_is_register) {
@@ -120,7 +129,7 @@ int main() {
     }
 
     std::vector<Instruction> instructions;
-    const std::regex regex{ R"(^([a-z]{3}) ([a-z]|-?\d+)( ([a-z]|-?\d+))?$)" };
+    const std::regex regex{ R"(^([a-z]{3}) ([a-z]|-?\d+) ([a-z]|-?\d+)$)" };
     std::string line;
     while (std::getline(file, line)) {
         std::smatch match;
@@ -128,7 +137,7 @@ int main() {
         // Parts:
         // match[1]: Operation
         // match[2]: First argument
-        // match[4]: Second argument
+        // match[3]: Second argument
 
         Operation op;
         if      (match[1] == "set") op = Operation::Set;
@@ -146,16 +155,12 @@ int main() {
             first_argument = std::stoi(match[2]);
         }
 
-        bool second_is_register;
+        bool second_is_register{ !static_cast<bool>(std::isdigit(match[3].str().at(match[3].length() - 1))) };
         int second_argument;
-        if (match[4].matched) {
-            second_is_register = !static_cast<bool>(std::isdigit(match[4].str().at(match[4].length() - 1)));
-            if (second_is_register) {
-                second_argument = static_cast<std::int64_t>(match[4].str().at(0));
-            }
-            else {
-                second_argument = std::stoi(match[4]);
-            }
+        if (second_is_register) {
+            second_argument = static_cast<std::int64_t>(match[3].str().at(0));
+        } else {
+            second_argument = std::stoi(match[3]);
         }
 
         instructions.emplace_back(op, first_is_register, first_argument, second_is_register, second_argument);

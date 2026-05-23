@@ -1,5 +1,6 @@
 {
   imports = [
+    ./cpp.nix
     ./dotnet.nix
     ./rust.nix
     ./zig.nix
@@ -12,6 +13,7 @@
         name = "AoC-all";
 
         inputsFrom = [
+          config.devShells.cpp
           config.devShells.dotnet
           config.devShells.rust
           config.devShells.zig
