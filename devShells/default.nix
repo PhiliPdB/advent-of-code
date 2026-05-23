@@ -6,12 +6,22 @@
   ];
 
   perSystem =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
+      devShells.all = pkgs.mkShell {
+        name = "AoC-all";
+
+        inputsFrom = [
+          config.devShells.dotnet
+          config.devShells.rust
+          config.devShells.zig
+        ];
+      };
+
       devShells.base = pkgs.mkShell {
         name = "Empty base shell for AoC";
 
-        nativeBuildInputs = with pkgs; [
+        packages = with pkgs; [
           aoc-cli
 
           # For performance benchmarking

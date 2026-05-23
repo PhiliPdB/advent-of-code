@@ -4,6 +4,8 @@
     {
       devShells.dotnet = pkgs.mkShell rec {
         name = "AoC-dotnet";
+        inputsFrom = [ config.devShells.base ];
+
         dotnetPkg = (
           with pkgs.dotnetCorePackages;
           combinePackages [
@@ -29,7 +31,7 @@
         );
         NIX_LD = "${pkgs.stdenv.cc.libc_bin}/bin/ld.so";
 
-        nativeBuildInputs = dependencies ++ config.devShells.base.nativeBuildInputs;
+        nativeBuildInputs = dependencies;
 
         shellHook = ''
           DOTNET_ROOT="${dotnetPkg}";

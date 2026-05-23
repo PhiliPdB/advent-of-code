@@ -4,8 +4,7 @@
     {
       devShells.zig = pkgs.mkShell {
         name = "AoC-zig";
-
-        nativeBuildInputs = config.devShells.base.nativeBuildInputs;
+        inputsFrom = [ config.devShells.base ];
 
         packages = with pkgs; [
           zig

@@ -4,15 +4,13 @@
     {
       devShells.rust = pkgs.mkShell {
         name = "AoC-rust";
+        inputsFrom = [ config.devShells.base ];
 
-        nativeBuildInputs =
-          with pkgs;
-          [
-            cmake
-            rustPlatform.bindgenHook
-            pkg-config
-          ]
-          ++ config.devShells.base.nativeBuildInputs;
+        nativeBuildInputs = with pkgs; [
+          cmake
+          rustPlatform.bindgenHook
+          pkg-config
+        ];
 
         buildInputs = with pkgs; [
           (rust-bin.stable.latest.default.override {
