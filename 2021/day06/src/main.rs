@@ -4,6 +4,7 @@ const TOTAL_DAYS: i32 = 256;
 
 fn main() {
     let input: Vec<_> = include_str!("../input.txt")
+        .trim()
         .split(',')
         .map(|s| s.parse::<usize>().unwrap())
         .collect();

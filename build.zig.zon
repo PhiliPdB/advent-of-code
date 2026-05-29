@@ -21,6 +21,7 @@
 
         // Singular days solved with Zig
         "2017/day23",
+        "2021/day06",
         "2021/day23",
     },
 }
